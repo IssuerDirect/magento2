@@ -1,0 +1,20 @@
+--- a/Core/lib/lang/prop/native.php
++++ b/Core/lib/lang/prop/native.php
+@@ -21,7 +21,6 @@
+ 	 * https://php.net/manual/reflectionmethod.setaccessible.php#refsect1-reflectionmethod.setaccessible-description
+ 	 * That is why I use @noinspection PhpExpressionResultUnusedInspection
+ 	 */
+-	$r->setAccessible(true);
+ 	return $r;
+ }
+ 
+--- a/Core/lib/lang/call/parent.php
++++ b/Core/lib/lang/call/parent.php
+@@ -28,7 +28,6 @@
+ 	 * https://php.net/manual/reflectionmethod.setaccessible.php#refsect1-reflectionmethod.setaccessible-description
+ 	 * That is why I use @noinspection PhpExpressionResultUnusedInspection
+ 	 */
+-	$rm->setAccessible(true);
+ 	/**
+ 	 * 2023-08-01
+ 	 * 1) «Magento\Framework\Config\Dom::validate():

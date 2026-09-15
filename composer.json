@@ -11,7 +11,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "laminas/laminas-dependency-plugin": true,
             "magento/*": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "cweagans/composer-patches": true
         },
         "preferred-install": "dist",
         "sort-packages": true
@@ -41,6 +42,7 @@
         "colinmollenhour/credis": "^1.15",
         "colinmollenhour/php-redis-session-abstract": "^2.0",
         "composer/composer": "^2.2",
+        "cweagans/composer-patches": "*",
         "duosecurity/duo_api_php": "^1.2",
         "duosecurity/duo_universal_php": "^1.0",
         "elasticsearch/elasticsearch": "^8.15",
@@ -67,6 +69,7 @@
         "laminas/laminas-view": "^2.36",
         "league/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "mage2pro/stripe": "^2.8",
         "magento/composer": "^1.10.2-beta4",
         "magento/composer-dependency-version-audit-plugin": "^0.1",
         "magento/magento-composer-installer": ">=0.4.0",
@@ -83,6 +86,7 @@
         "predis/predis": "^3.5",
         "psr/log": "^2 || ^3",
         "ramsey/uuid": "^4.2",
+        "sentry/sentry": "^4.31",
         "spomky-labs/aes-key-wrap": "^7.0",
         "stomp-php/stomp-php": "^5.1",
         "symfony/cache": "^7.4",
@@ -361,6 +365,11 @@
         "gene/bluefoot": "*"
     },
     "extra": {
+        "patches": {
+            "mage2pro/core": {
+                "Remove no-op ReflectionProperty::setAccessible() calls, deprecated since PHP 8.5 (already inert since PHP 8.1)": "patches/mage2pro-core-php85-setaccessible.patch"
+            }
+        },
         "component_paths": {
             "trentrichardson/jquery-timepicker-addon": "lib/web/jquery/jquery-ui-timepicker-addon.js",
             "components/jquery": [

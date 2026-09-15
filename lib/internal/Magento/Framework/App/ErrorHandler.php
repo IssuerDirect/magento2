@@ -50,6 +50,14 @@ class ErrorHandler
             return false;
         }
 
+        // 2026-09-15: don't escalate mere deprecation notices to a fatal exception -
+        // PHP 8.4+ deprecations (e.g. implicit-nullable params) surface heavily from
+        // third-party vendor code that predates PHP 8.4, and are not actual bugs in
+        // this application. Real errors/warnings/notices remain fatal as before.
+        if ($errorNo === E_DEPRECATED || $errorNo === E_USER_DEPRECATED) {
+            return false;
+        }
+
         $errorNo = $errorNo & error_reporting();
         if ($errorNo == 0) {
             return false;
