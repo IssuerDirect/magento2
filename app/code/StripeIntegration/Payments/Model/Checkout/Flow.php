@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace StripeIntegration\Payments\Model\Checkout;
+
+class Flow
+{
+    public $isExpressCheckout = false;
+    public $isFutureSubscriptionSetup = false;
+    public $isPendingMicrodepositsVerification = false;
+    public $creatingOrderFromCharge = null;
+    public $isNewOrderBeingPlaced = false;
+    public $isRecurringSubscriptionOrderBeingPlaced = false;
+    public $isQuoteCorrupted = false;
+    public $isCleaningExpiredOrders = false;
+    public $isCheckoutSessionRecreated = false;
+    public $isSwitchingSubscriptionPlan = false;
+    public $isDelayedSubscriptionSetup = false;
+    public $isSubscriptionUpdate = false;
+    private $disableZeroInitialPrices = false;
+
+    public function shouldNotBillTrialSubscriptionItems()
+    {
+        return ($this->isNewOrderBeingPlaced || $this->isCheckoutSessionRecreated || $this->isDelayedSubscriptionSetup)
+            && !$this->isRecurringSubscriptionOrderBeingPlaced
+            && !$this->disableZeroInitialPrices;
+    }
+
+    public function disableZeroInitialPrices()
+    {
+        $this->disableZeroInitialPrices = true;
+    }
+
+    public function enableZeroInitialPrices()
+    {
+        $this->disableZeroInitialPrices = false;
+    }
+
+    public function isPaymentMethodAvailable()
+    {
+        return $this->isRecurringSubscriptionOrderBeingPlaced || $this->isSwitchingSubscriptionPlan;
+    }
+}

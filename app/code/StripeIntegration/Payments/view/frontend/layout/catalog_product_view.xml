@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.addtocart">
+            <block name="product.info.stripe_payments_express"
+                class="StripeIntegration\Payments\Block\Button"
+                template="StripeIntegration_Payments::express/product_button.phtml"
+                ifconfig="payment/stripe_payments_express/global_enabled"
+                before="-" />
+            <block name="payment.method.messaging.element"
+                   class="StripeIntegration\Payments\Block\Product\PaymentMethodMessagingElement"
+                   template="StripeIntegration_Payments::product/payment_method_messaging_element.phtml"
+                   ifconfig="payment/stripe_payments_payment_method_messaging/show_on_product_page"
+                   after="product.info.stripe_payments_express" />
+        </referenceBlock>
+
+        <referenceBlock name="product.info.addtocart.additional">
+            <block name="product.info.addtocart.stripe_payments_express.additional"
+                class="StripeIntegration\Payments\Block\Button"
+                template="StripeIntegration_Payments::express/product_button.phtml"
+                ifconfig="payment/stripe_payments_express/global_enabled"
+                before="-" />
+            <block name="payment.method.messaging.element.additional"
+                   class="StripeIntegration\Payments\Block\Product\PaymentMethodMessagingElement"
+                   template="StripeIntegration_Payments::product/payment_method_messaging_element.phtml"
+                   ifconfig="payment/stripe_payments_payment_method_messaging/show_on_product_page"
+                   after="product.info.stripe_payments_express" />
+        </referenceBlock>
+
+        <referenceBlock name="product.info.addtocart.bundle">
+            <block name="product.info.addtocart.stripe_payments_express.bundle"
+            class="StripeIntegration\Payments\Block\Button"
+            template="StripeIntegration_Payments::express/product_button.phtml"
+            ifconfig="payment/stripe_payments_express/global_enabled"
+            before="-" />
+        </referenceBlock>
+    </body>
+</page>

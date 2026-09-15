@@ -1,0 +1,245 @@
+input PaymentMethodInput {
+    stripe_payments: StripePaymentsInput @doc(description:"Required input for Stripe Payments")
+}
+
+input StripePaymentsInput {
+    payment_method: String @doc(description: "Pass the payment method token here (starts with pm_)")
+    confirmation_token: String @doc(description: "Pass the confirmation token here (starts with ctoken_)")
+    save_payment_method: Boolean @doc(description: "Specify whether the payment method should be saved")
+    cvc_token: String @doc(description:"DEPRECATED: Kept for backwards compatibility, but is ignored.")
+}
+
+type Order @doc(description: "Contains the order ID.") {
+    client_secret: String @doc(description: "The client secret of the PaymentIntent or SetupIntent that is associated with this order")
+}
+
+input StripePaymentMethodId {
+    payment_method: String! @doc(description: "The ID of a payment method object")
+    fingerprint: String @doc(description: "When this is passed, the action will be performed on all duplicate payment methods which match the fingerprint.")
+}
+
+input SubscriptionPaymentMethodInput {
+    subscription_id: String! @doc(description: "The Stripe subscription ID.")
+    payment_method: String! @doc(description: "The Stripe payment method ID.")
+}
+
+type StripePaymentMethod {
+    id: ID! @doc(description: "Payment method ID")
+    created: Int @doc(description: "UNIX timestamp representing the date that the payment method was created.")
+    type: String @doc(description: "The type of the payment method, i.e. card, klarna, sepa_debit.")
+    fingerprint: String @doc(description: "A unique identifier for the card number, tax id, bank account etc.")
+    label: String @doc(description: "A formatted payment method label that you can display to the customer.")
+    icon: String @doc(description: "A payment method icon URL that can be used at the front-end.")
+    cvc: Boolean @doc(description: "Indicates whether this saved payment method requires a CVC token to be submitted when placing an order.")
+    brand: String @doc(description: "Card brand")
+    exp_month: Int @doc(description: "Card expiration month")
+    exp_year: Int @doc(description: "Card expiration year")
+}
+
+input ECEParamsRequest @doc(description: "Request for getting the ECE initialization parameters.") {
+    location: String! @doc(description: "The location of the ECE.")
+    productId: String @doc(description: "The product for which the ECE is created.")
+}
+
+type ShippingRate @doc(description: "A shipping rate component to be used by the ECE.") {
+    id: String @doc(description: "The ID of the shipping rate.")
+    amount: Int @doc(description: "The amount of the shipping rate.")
+    displayName: String @doc(description: "The display name of the shipping rate.")
+}
+
+type ResolvePayload @doc(description: "Payload used to resolve events on the ECE.") {
+    allowedShippingCountries: [String] @doc(description: "Allowed shipping countries.")
+    billingAddressRequired: Boolean @doc(description: "Indicates whether the billing address is required.")
+    emailRequired: Boolean @doc(description: "Indicates whether the email address is required.")
+    phoneNumberRequired: Boolean @doc(description: "Indicates whether the phone number is required.")
+    shippingAddressRequired: Boolean @doc(description: "Indicates whether the shipping address is required.")
+    shippingRates: [ShippingRate] @doc(description: "The shipping rates available.")
+    lineItems: [LineItems] @doc(description: "An array of line items for updating or initializing the amount on the ECE.")
+}
+
+type LineItems @doc(description: "A line item containing a name and amount, to be used by the ECE.") {
+    name: String @doc(description: "Name of the line item.")
+    amount: Int @doc(description: "Amount of the line item.")
+}
+
+type Variables @doc(description: "Variables in the appearance details for teh ECE.") {
+    colorText: String @doc(description: "Color of the text.")
+    fontFamily: String @doc(description: "The font family.")
+}
+
+type Appearance @doc(description: "Appearance details for the ECE.") {
+    theme: String @doc(description: "Defined theme the ECE.")
+    variables: Variables @doc(description: "Defined variables the ECE.")
+}
+
+type ExpressCheckoutOptions @doc(description: "ECE wallet-button options passed at create/update time.") {
+    allowedShippingCountries: [String] @doc(description: "Allowed shipping countries.")
+    billingAddressRequired: Boolean @doc(description: "Indicates whether the billing address is required.")
+    emailRequired: Boolean @doc(description: "Indicates whether the email address is required.")
+    phoneNumberRequired: Boolean @doc(description: "Indicates whether the phone number is required.")
+    shippingAddressRequired: Boolean @doc(description: "Indicates whether the shipping address is required.")
+}
+
+type ElementOptions @doc(description: "Element options component of the ECE parameters.") {
+    mode: String @doc(description: "Mode for the ECE.")
+    locale: String @doc(description: "Locale language.")
+    appearance: Appearance @doc(description: "Appearance params for the ECE.")
+    currency: String @doc(description: "Currency for the ECE.")
+    amount: Int @doc(description: "Currency for the ECE.")
+}
+
+type ECEParams @doc(description: "Parameters for the initialization of the ECE.") {
+    resolvePayload: ResolvePayload @doc(description: "Resolve payload component of the ECE params.")
+    elementOptions: ElementOptions @doc(description: "Element options component of the ECE params.")
+    expressCheckoutOptions: ExpressCheckoutOptions @doc(description: "Wallet-button options for the Express Checkout Element (passed at create/update time).")
+}
+
+input AddToCartECERequest @doc(description: "Request structure for adding a product to the cart.") {
+    params: String @doc(description: "Product details like ID, qty, etc.")
+    shipping_id: String @doc(description: "The ID of the shipping method to be used.")
+}
+
+input ECEAddress @doc(description: "Address component for shipping address.") {
+    city: String @doc(description: "City component of the address.")
+    country: String @doc(description: "Country component of the address.")
+    postal_code: String @doc(description: "Postal code component of the address.")
+    state: String @doc(description: "State component of the address.")
+}
+
+input ECEShippingAddressChange @doc(description: "Shipping address change request.") {
+    location: String @doc(description: "Location of the ECE.")
+    newAddress: ECEAddress @doc(description: "Address to be used.")
+}
+
+input ECEShippingRateChange @doc(description: "Shipping rate change request.") {
+    shippingMethodId: String @doc(description: "The shipping method id.")
+    address: ECEAddress @doc(description: "The address to be used.")
+}
+
+input ECEPlaceOrder @doc(description: "Request for placing the order.") {
+    location: String @doc(description: "The location where the request is made from.")
+    result: String @doc(description: "Event being sent by the ECE. Can have the confirmation token added to it.")
+}
+
+input ECEConfigurationInput {
+    location: String @doc(description: "The location where the request is made from.")
+}
+
+input FutureSubscriptionsInput {
+    billingAddress: String @doc(description: "JSON-encoded billing address data.")
+    shippingAddress: String @doc(description: "JSON-encoded shipping address data.")
+    shippingMethod: String @doc(description: "JSON-encoded shipping method data with carrier_code and method_code.")
+}
+
+input CheckoutPaymentMethodsInput {
+    billingAddress: String! @doc(description: "JSON-encoded billing address data.")
+    shippingAddress: String @doc(description: "JSON-encoded shipping address data.")
+    shippingMethod: String @doc(description: "JSON-encoded shipping method data.")
+    couponCode: String @doc(description: "Coupon code to apply.")
+}
+
+input UpdateCartInput {
+    data: String @doc(description: "JSON-encoded additional data for the cart update.")
+}
+
+type FutureSubscriptionsOutput @doc(description: "Details about future subscriptions.") {
+    title: String @doc(description: "Title of the subscription details.")
+    start_date_label: String @doc(description: "Label for the start date.")
+    frequency_label: String @doc(description: "Label for the billing frequency.")
+    formatted_amount: String @doc(description: "Formatted subscription amount.")
+}
+
+type CheckoutPaymentMethodsOutput @doc(description: "Available payment methods for the checkout.") {
+    methods: [String] @doc(description: "List of available payment method type identifiers.")
+}
+
+type UpcomingInvoicePrice @doc(description: "Price details on an upcoming invoice.") {
+    amount: Float @doc(description: "The amount.")
+    currency: String @doc(description: "The currency code.")
+    label: String @doc(description: "The formatted label.")
+}
+
+type UpcomingInvoiceOutput @doc(description: "Upcoming invoice details.") {
+    new_price: UpcomingInvoicePrice @doc(description: "The new price details.")
+    credit: String @doc(description: "Credit information.")
+    error: String @doc(description: "Error message if any.")
+}
+
+type RestoreQuoteOutput @doc(description: "Response from restoring a quote.") {
+    error: String @doc(description: "Error message if the operation failed.")
+}
+
+type UpdateCartOutput @doc(description: "Response from updating the cart.") {
+    placeNewOrder: Boolean @doc(description: "Whether a new order should be placed.")
+    reason: String @doc(description: "Reason for the result.")
+    error: String @doc(description: "Error message if any.")
+}
+
+type PlaceMultishippingOrderOutput @doc(description: "Response from placing a multishipping order.") {
+    redirect: String @doc(description: "Redirect URL.")
+    error: String @doc(description: "Error message if any.")
+    authenticate: String @doc(description: "Authentication required client secret.")
+}
+
+type FinalizeMultishippingOrderOutput @doc(description: "Response from finalizing a multishipping order.") {
+    redirect: String @doc(description: "Redirect URL.")
+    error: String @doc(description: "Error message if any.")
+}
+
+type ECEPlaceOrderResponse @doc(description: "Response fro the place order request.") {
+    redirect: String @doc(description: "Redirect component.")
+    client_secret: String @doc(description: "Client secret component, which can be used for the 3ds auths.")
+}
+
+type Mutation {
+    addStripePaymentMethod(input: StripePaymentMethodId!): StripePaymentMethod @doc(description: "Saves a payment method on the logged in customer") @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\AddStripePaymentMethod")
+    listStripePaymentMethods: [StripePaymentMethod] @doc(description: "List all saved payment methods of a logged in customer") @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ListStripePaymentMethods")
+    deleteStripePaymentMethod(input: StripePaymentMethodId!): String @doc(description: "Deletes a saved payment method from a logged in customer") @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\DeleteStripePaymentMethod")
+    changeSubscriptionPaymentMethod(input: SubscriptionPaymentMethodInput!): Boolean @doc(description: "Changes the default payment method of a Stripe subscription for the logged in customer") @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ChangeSubscriptionPaymentMethod")
+    getECEParams(input: ECEParamsRequest!): ECEParams @doc(description: "Returns the parameters for forming the ECE.") @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetECEParams")
+    addToCart(input: AddToCartECERequest!): [String] @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\AddToCart")
+    eceShippingAddressChanged(input: ECEShippingAddressChange): ECEParams @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ECEShippingAddressChanged")
+    eceShippingRateChanged(input: ECEShippingRateChange): ECEParams @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ECEShippingRateChanged")
+    ecePlaceOrder(input: ECEPlaceOrder): ECEPlaceOrderResponse @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ECEPlaceOrder")
+    restoreQuote: RestoreQuoteOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\RestoreQuote") @doc(description: "Restores the quote of the last placed order.")
+    updateCart(input: UpdateCartInput): UpdateCartOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\UpdateCart") @doc(description: "Updates the cart after a payment failure.")
+    placeMultishippingOrder: PlaceMultishippingOrderOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\PlaceMultishippingOrder") @doc(description: "Places a multishipping order.")
+    finalizeMultishippingOrder(error: String): FinalizeMultishippingOrderOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\FinalizeMultishippingOrder") @doc(description: "Finalizes a multishipping order after a card decline or authentication failure.")
+}
+
+type Query {
+    getStripeConfiguration: ModuleConfiguration @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\ModuleConfiguration") @doc(description: "Get the module's configuration to initialize Stripe Elements.")
+    getStripeECEConfiguration(input: ECEConfigurationInput): ECEConfiguration @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetStripeECEConfiguration") @doc(description: "Get the module's configuration to initialize Stripe ECE.")
+    getRequiresAction: String @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetRequiresAction")
+    getFutureSubscriptions(input: FutureSubscriptionsInput): FutureSubscriptionsOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetFutureSubscriptions") @doc(description: "Gets future subscription details.")
+    getCheckoutPaymentMethods(input: CheckoutPaymentMethodsInput!): CheckoutPaymentMethodsOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetCheckoutPaymentMethods") @doc(description: "Gets available payment methods for the checkout.")
+    getCheckoutSessionId: String @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetCheckoutSessionId") @doc(description: "Gets the Stripe Checkout session ID.")
+    getCheckoutSessionUrl: String @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetCheckoutSessionUrl") @doc(description: "Gets the Stripe Checkout session redirect URL.")
+    getUpcomingInvoice: UpcomingInvoiceOutput @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetUpcomingInvoice") @doc(description: "Gets the upcoming invoice for subscription updates.")
+    getInstallmentPlans: String @resolver(class: "\\StripeIntegration\\Payments\\Model\\GraphQL\\Resolver\\GetInstallmentPlans") @doc(description: "Gets the installment plans.")
+}
+
+type ModuleConfiguration {
+    apiKey: String @doc(description: "The Public Key of the Stripe payment.")
+    locale: String @doc(description: "Locale")
+    appInfo: AppInfo @doc(description: "Module Version and Partner ID etc")
+    options: ModuleOptions @doc(description: "Betas and API version")
+    elementsOptions: String @doc(description: "Serialized options that can be used to initialize the Elements object")
+}
+
+type ECEConfiguration {
+    enabled: Boolean @doc(description: "Param which determines if the ECE is enabled")
+    initParams: ModuleConfiguration @doc(description: "The Stripe settings for initializing the ECE")
+    buttonConfig: String @doc(description: "The settings fro the ECE payment methods. Set as a String because the structure is complex and might not be the same on different calls.")
+}
+
+type AppInfo @doc(description: "App info component for the module configuration.") {
+    name: String
+    partner_id: String
+    url: String
+    version: String
+}
+
+type ModuleOptions {
+    betas: [String] @doc(description: "Betas.")
+}

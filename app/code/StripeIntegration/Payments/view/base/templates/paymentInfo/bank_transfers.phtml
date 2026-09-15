@@ -1,0 +1,89 @@
+<h4>
+    <span class="stripe-payment-method" style="display: flex; align-items: center;">
+        <?php if ($block->getPaymentMethodIconUrl()): ?>
+            <img src="<?= $block->escapeUrl($block->getPaymentMethodIconUrl("png")); ?>" class="stripe-payment-method-icon" style="margin-right: 1rem;">
+        <?php endif; ?>
+        <?php if ($block->getPaymentMethodName()): ?>
+            <span class="stripe-payment-method-name"><?= $block->escapeHtml($block->getPaymentMethodName()); ?></span>
+        <?php endif; ?>
+    </span>
+</h4>
+
+<table class="admin__table-secondary order-information-table stripe payment-info">
+  <tbody>
+
+    <tr>
+        <th><?= $block->escapeHtml(__('Amount remaining')); ?> &nbsp;</th>
+        <td class="stripe-amount">
+            <strong>
+                <?= /* @noEscape */ $block->getFormattedAmountRemaining(); ?>
+            </strong>
+        </td>
+    </tr>
+
+    <?php $details = $block->getIbanDetails(); ?>
+    <?php if ($details): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('IBAN')); ?></th>
+        <td class="iban" style="word-wrap: break-word; overflow-wrap: break-word; max-width: 150px;">
+            <?= $block->escapeHtml($details['iban']); ?>
+        </td>
+    </tr>
+    <tr>
+        <th><?= $block->escapeHtml(__('BIC')); ?></th>
+        <td class="bic">
+            <?= $block->escapeHtml($details['bic']); ?>
+        </td>
+    </tr>
+    <tr>
+        <th><?= $block->escapeHtml(__('Country')); ?></th>
+        <td class="country">
+            <?= $block->escapeHtml($details['country']); ?>
+        </td>
+    </tr>
+    <tr>
+        <th><?= $block->escapeHtml(__('Account holder name')); ?></th>
+        <td class="account-holder-name">
+            <?= $block->escapeHtml($details['account_holder_name']); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!$block->isPaid() && $block->getInvoiceURL()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Pay invoice')); ?></th>
+        <td class="invoice">
+            <a href="<?= $block->escapeUrl($block->getInvoiceURL()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View instructions")) ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getInvoicePDF()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Download invoice')); ?></th>
+        <td class="invoice-pdf">
+            <a href="<?= $block->escapeUrl($block->getInvoicePDF()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("Download PDF")) ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getReference()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Reference')); ?></th>
+        <td class="reference">
+            <?= $block->escapeHtml($block->getReference()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getHostedInstructionsUrl()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Instructions')); ?></th>
+        <td class="instructions">
+            <a href="<?= $block->escapeUrl($block->getHostedInstructionsUrl()); ?>" target="_blank" rel="noopener noreferrer">View instructions</a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    </tbody>
+</table>

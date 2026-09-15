@@ -1,0 +1,10 @@
+<!-- ko if: isVisible() -->
+<!-- ko foreach: getFees() -->
+<tr class="totals stripe-flat-fee">
+    <th data-bind="text: title" class="mark" scope="row"></th>
+    <td data-bind="attr: {'data-th': title}" class="amount">
+        <span class="price" data-bind="text: $parent.getFormattedValue(value)"></span>
+    </td>
+</tr>
+<!-- /ko -->
+<!-- /ko -->

@@ -1,0 +1,138 @@
+<?php
+
+$subscriptions = $block->getActiveSubscriptions();
+$canceledSubscriptions = $block->getCanceledSubscriptions();
+
+/** @var \StripeIntegration\Payments\Block\Customer $block */
+
+if (empty($subscriptions)): ?>
+<div class="message info empty">
+  <span><?= $block->escapeHtml(__("You do not have any active subscriptions.")); ?></span>
+</div>
+  <?php if (!empty($canceledSubscriptions)): ?>
+    <div class="table-wrapper stripe-subscriptions">
+      <table class="data table table-order-items history" id="my-orders-table">
+        <?= /* @noEscape */ $block->getCanceledSubscriptionsHtml(); ?>
+      </table>
+    </div>
+  <?php endif; ?>
+<?php else: ?>
+  <div class="table-wrapper stripe-subscriptions">
+    <table class="data table table-order-items history" id="my-orders-table">
+      <caption class="table-caption"><?= $block->escapeHtml(__("Subscriptions")); ?></caption>
+      <thead>
+        <tr>
+          <th scope="col" class="col order"><?= $block->escapeHtml(__("Order #")); ?></th>
+          <th scope="col" class="col id"><?= $block->escapeHtml(__("Subscription")); ?></th>
+          <th scope="col" class="col status"><?= $block->escapeHtml(__("Actions")); ?></th>
+        </tr>
+      </thead>
+      <tbody>
+  <?php foreach ($subscriptions as $subscription): ?>
+    <?php
+      /** @var \StripeIntegration\Payments\Model\Stripe\Subscription $stripeSubscriptionModel */
+      $stripeSubscriptionModel = $block->getSubscriptionModel($subscription);
+      ?>
+        <tr class="<?= $block->escapeHtmlAttr($subscription->id); ?>">
+          <td data-th="Order #" class="col order">
+            <a href="viewOrder/<?= $block->escapeHtmlAttr($subscription->metadata["Order #"]); ?>">
+              <?= $block->escapeHtml($subscription->metadata["Order #"]); ?>
+            </a>
+          </td>
+          <td data-th="<?= $block->escapeHtmlAttr(__("Subscription")); ?>" class="col id">
+            <div class="subscription-name">
+              <?= $block->escapeHtml($block->getSubscriptionName($subscription)); ?>
+            </div>
+            <div class="billed">
+              <?= /* @noEscape */ $stripeSubscriptionModel->getFormattedBilling(); ?>
+            </div>
+            <div class="<?= $block->escapeHtmlAttr($subscription->id); ?> payment-method stripe-subscription-edit">
+              <div class="static section">
+                <div class="details stripe-payments">
+                  <?php $paymentMethod = $block->getSubscriptionDefaultPaymentMethod($subscription); ?>
+                  <?php if ($paymentMethod): ?>
+                    <img class="icon" src="<?= $block->escapeHtmlAttr($paymentMethod['icon']); ?>" alt="<?= $block->escapeHtmlAttr($paymentMethod['label']); ?>">
+                    <span class="label"><?= $block->escapeHtml($paymentMethod['label']); ?></span>
+                    <?php if (!empty($paymentMethod['exp_month'])): ?>
+                      <span class="exp">
+                        <?= $block->escapeHtml($paymentMethod['exp_month']); ?>/<?= $block->escapeHtml($paymentMethod['exp_year']); ?>
+                      </span>
+                    <?php endif; ?>
+                  <?php else: ?>
+                    <?= $block->escapeHtml(__("No payment method.")); ?>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td data-th="Actions" class="col">
+            <div class="stripe-actions-dropdown">
+              <span class="action toggle" data-toggle="dropdown" aria-haspopup="true"
+                data-mage-init='{"dropdown":{}}'
+                >
+                <span>
+                  <svg aria-hidden="true" class="SVGInline-svg SVGInline--cleaned-svg SVG-svg Icon-svg Icon--more-svg Button-icon-svg Icon-color-svg Icon-color--inherit-svg" height="16" width="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill-rule="evenodd"></path></svg>
+                </span>
+              </span>
+              <ul class="dropdown-options" data-target="dropdown">
+                <?php if ($stripeSubscriptionModel->canUpgradeDowngrade()): ?>
+                    <li>
+                      <form method="POST" action="<?= $block->escapeUrl($block->getUrl('stripe/subscriptions/change')); ?>">
+                        <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()); ?>">
+                        <input type="hidden" name="subscription_id" value="<?= $block->escapeHtmlAttr($subscription->id); ?>">
+                        <button type="submit" class="action alink stripe-link"><?= $block->escapeHtml(__('Change subscription')); ?></button>
+                      </form>
+                    </li>
+                <?php endif; ?>
+                <li>
+                  <span class="item" data-action="edit-subscription" data-subscription-id="<?= $block->escapeJs($subscription->id); ?>" data-section="payment-method">
+                      <button type="button" class="action alink stripe-link stripe-add-payment-method-link" data-subscription-id="<?= $block->escapeHtmlAttr($subscription->id); ?>"><?= $block->escapeHtml(__("Change payment method")); ?></button>
+                  </span>
+                </li>
+                <?php if ($stripeSubscriptionModel->canChangeShipping()): ?>
+                <li>
+                  <span class="item">
+                    <form method="POST" action="<?= $block->escapeUrl($block->getUrl('stripe/subscriptions/changeshipping')); ?>">
+                      <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()); ?>">
+                      <input type="hidden" name="subscription_id" value="<?= $block->escapeHtmlAttr($subscription->id); ?>">
+                      <button type="submit" class="action alink stripe-link"><?= $block->escapeHtml(__('Change shipping details')); ?></button>
+                    </form>
+                  </span>
+                </li>
+                <?php endif; ?>
+                <li class="cancel">
+                  <span class="item">
+                    <form method="POST" action="<?= $block->escapeUrl($block->getUrl('stripe/subscriptions/cancel')); ?>">
+                      <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()); ?>">
+                      <input type="hidden" name="subscription_id" value="<?= $block->escapeHtmlAttr($subscription->id); ?>">
+                      <button type="submit" class="action delete stripe-link"><?= $block->escapeHtml(__('Cancel subscription')); ?></button>
+                    </form>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+  <?php endforeach; ?>
+        <?= /* @noEscape */ $block->getCanceledSubscriptionsHtml(); ?>
+      </tbody>
+    </table>
+  </div>
+<?php endif; ?>
+
+<div id="stripe-subscription-add-payment-modal" style="display:none;">
+    <div data-bind="scope: 'payment_method_stripe_payments'">
+        <!-- ko template: getTemplate() --><!-- /ko -->
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "StripeIntegration_Payments/js/view/customer/payment-methods-initializer": {
+                "initParams": <?= /* @noEscape */ $block->getInitParams(); ?>,
+                "mode": "new_subscription_payment_method"
+            }
+        }
+    }
+</script>

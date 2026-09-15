@@ -1,0 +1,178 @@
+<?php
+
+namespace StripeIntegration\Payments\Helper;
+
+class PaymentMethodOptions
+{
+    private $paymentMethodHelper;
+    private $config;
+
+    public function __construct(
+        \StripeIntegration\Payments\Model\Config $config,
+        \StripeIntegration\Payments\Helper\PaymentMethod $paymentMethodHelper
+    )
+    {
+        $this->paymentMethodHelper = $paymentMethodHelper;
+        $this->config = $config;
+    }
+
+    public function getPaymentMethodOptions($quote) : array
+    {
+        $sfuOptions = $captureOptions = $cvcOptions =[];
+
+        $setupFutureUsage = $this->config->getSetupFutureUsage($quote);
+
+        if ($setupFutureUsage)
+        {
+            $value = ["setup_future_usage" => $setupFutureUsage];
+
+            $sfuOptions['card'] = $value;
+
+            $canBeSaved = $this->paymentMethodHelper->getPaymentMethodsThatCanBeSaved();
+            foreach ($canBeSaved as $code)
+            {
+                $sfuOptions[$code] = $value;
+            }
+
+            if ($setupFutureUsage == "on_session")
+            {
+                // The following methods do not display if we request an on_session setup
+                $value = ["setup_future_usage" => "off_session"];
+                $canBeSavedOffSession = $this->paymentMethodHelper->getPaymentMethodsThatCanOnlyBeSavedOffSession();
+                foreach ($canBeSavedOffSession as $code)
+                {
+                    $sfuOptions[$code] = $value;
+                }
+            }
+        }
+
+        if ($this->config->reCheckCVCForSavedCards() && $this->config->hasCustomerSessionFeatures($quote))
+        {
+            $cvcOptions['card']['require_cvc_recollection'] = true;
+        }
+
+        if ($this->config->isAuthorizeOnly())
+        {
+            $value = [ "capture_method" => "manual" ];
+
+            $methodCodes = $this->paymentMethodHelper->getPaymentMethodsThatCanCaptureManually();
+
+            foreach ($methodCodes as $methodCode)
+            {
+                $captureOptions[$methodCode] = $value;
+            }
+        }
+
+        $wechatOptions["wechat_pay"]["client"] = 'web';
+
+        if ($this->config->isOvercaptureEnabled())
+        {
+            $overcaptureOptions["card"]["request_overcapture"] = "if_available";
+        }
+        else
+        {
+            $overcaptureOptions = [];
+        }
+
+        if ($this->config->isMulticaptureEnabled())
+        {
+            $multiCaptureOptions = [
+                'card' => [
+                    'request_multicapture' => 'if_available'
+                ]
+            ];
+        }
+        else
+        {
+            $multiCaptureOptions = [];
+        }
+
+        if ($this->config->isExtendedAuthorizationsEnabled())
+        {
+            $eaOptions = [
+                'card' => [
+                    'request_extended_authorization' => 'if_available'
+                ]
+            ];
+        }
+        else
+        {
+            $eaOptions = [];
+        }
+
+        if ($this->config->isMsiEnabled()) {
+            $msiOptions = [
+                'card' => [
+                    'installments' => [
+                        'enabled' => true
+                    ]
+                ]
+            ];
+        } else {
+            $msiOptions = [];
+        }
+
+        return array_merge_recursive(
+            $sfuOptions,
+            $captureOptions,
+            $wechatOptions,
+            $overcaptureOptions,
+            $multiCaptureOptions,
+            $eaOptions,
+            $msiOptions,
+            $cvcOptions
+        );
+    }
+
+    public function getPaymentElementTerms($quote): array
+    {
+        $terms = [];
+        $options = $this->getPaymentMethodOptions($quote);
+
+        foreach ($options as $code => $values)
+        {
+            switch ($code)
+            {
+                case "card":
+                    if ($this->hasSaveOption($values))
+                    {
+                        $terms["card"] = "always";
+                        $terms["applePay"] = "always";
+                        $terms["googlePay"] = "always";
+                        $terms["paypal"] = "always";
+                    }
+                    break;
+                case "au_becs_debit":
+                case "bancontact":
+                case "cashapp":
+                case "ideal":
+                case "paypal":
+                case "sepa_debit":
+                case "us_bank_account":
+                    $camelCaseCode = $this->snakeCaseToCamelCase($code);
+                    $terms[$camelCaseCode] = "always";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $terms;
+    }
+
+    private function hasSaveOption($options)
+    {
+        if (!isset($options["setup_future_usage"]))
+            return false;
+
+        if (in_array($options["setup_future_usage"], ["on_session", "off_session"]))
+            return true;
+
+        return false;
+    }
+
+    private function snakeCaseToCamelCase($string)
+    {
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $string))));
+    }
+}

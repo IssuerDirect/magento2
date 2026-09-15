@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="FillCardCvcForSavedPaymentMethodActionGroup">
+        <annotations>
+            <description>Fill the cvc for saved card payment method.</description>
+        </annotations>
+        <arguments>
+            <argument name="CVC" defaultValue="{{Cards.cvc}}" type="string"/>
+        </arguments>
+
+        <!-- Halt test execution for 4 seconds before continuing. -->
+        <wait time="4" stepKey="waitFourSeconds"/>
+
+        <!-- Wait for the PaymentElement iframe to be present -->
+        <waitForElementVisible selector="{{StorefrontStripePaymentMethodSection.paymentElementIframe}}" stepKey="waitForPaymentElementIframe" time="30"/>
+
+        <!-- Switch to PaymentElement iFrame -->
+        <switchToIFrame selector="{{StorefrontStripePaymentMethodSection.paymentElementIframe}}" stepKey="switchToPaymentElementIframe"/>
+
+        <!-- Wait for the CVC field to be visible inside the iframe -->
+        <waitForElementVisible selector="{{StorefrontStripePaymentMethodSection.savedCardCvcField}}" stepKey="waitForCvcField" time="10"/>
+
+        <!-- Fill the CVC number -->
+        <fillField selector="{{StorefrontStripePaymentMethodSection.savedCardCvcField}}" userInput="{{CVC}}" stepKey="fillCVC"/>
+
+        <switchToIFrame stepKey="switchOutOfPaymentElementIframe"/>
+    </actionGroup>
+</actionGroups>

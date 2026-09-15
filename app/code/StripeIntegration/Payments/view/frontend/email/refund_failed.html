@@ -1,0 +1,16 @@
+<!--@subject A Stripe refund has failed @-->
+<!--@vars {
+"var formattedAmount":"Formatted Refund Amount",
+"var orderIncrementId":"Order Increment ID",
+"var refundLink":"Refund Link"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<h2>Refund failed</h2>
+
+<p>A refund of {{var formattedAmount}} for order #{{var orderIncrementId}} has failed.</p>
+
+<p>Please review the refund in your <a href="{{var refundLink}}" target="_blank">Stripe Dashboard</a> and take the appropriate action.</p>
+
+{{template config_path="design/email/footer_template"}}

@@ -1,0 +1,17 @@
+<?php if ($block->isEnabled("product_page")) : ?>
+    <div id="payment-request-button" class="payment-request-button"></div>
+    <script type="text/x-magento-init">
+        {
+            "#payment-request-button": {
+                "StripeIntegration_Payments/js/stripe_payments_express/initializer": {
+                    "locationDetails": {
+                        "location": "product",
+                        "productId": "<?= $block->escapeJs($block->getProductId()); ?>"
+                    },
+                    "walletParams": <?= /* @noEscape */ $block->initParams->getWalletParams(); ?>,
+                    "buttonConfig": <?= /* @noEscape */ $block->getButtonConfig(); ?>
+                }
+            }
+        }
+    </script>
+<?php endif; ?>

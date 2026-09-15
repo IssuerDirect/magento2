@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="stripe_failed_recurring_order" label="Failed recurring order" file="failed_recurring_order.html" type="html" module="StripeIntegration_Payments" area="frontend"/>
+    <template id="stripe_missing_order" label="Missing order" file="missing_order.html" type="html" module="StripeIntegration_Payments" area="frontend"/>
+    <template id="stripe_checkout_crash" label="Checkout crash" file="checkout_crash.html" type="html" module="StripeIntegration_Payments" area="frontend"/>
+    <template id="stripe_checkout_crash_subscription" label="Checkout crash (subscription)" file="checkout_crash_subscription.html" type="html" module="StripeIntegration_Payments" area="frontend"/>
+    <template id="stripe_refund_failed" label="Refund failed" file="refund_failed.html" type="html" module="StripeIntegration_Payments" area="frontend"/>
+</config>

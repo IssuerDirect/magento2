@@ -1,0 +1,71 @@
+<span class="stripe-method-title"><?= $block->escapeHtml(__('Subscription update')); ?></span>
+
+<table class="admin__table-secondary order-information-table stripe payment-info">
+  <tbody>
+
+    <?php if ($block->getOriginalSubscriptionOrderIncrementId()): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Previous subscription order')); ?></td>
+        <td class="stripe-original-order">
+            <a href="<?= $block->escapeUrl($block->getSubscriptionOrderUrl($block->getOriginalSubscriptionOrderIncrementId())); ?>" target="_blank">
+                #<?= $block->escapeHtml($block->getOriginalSubscriptionOrderIncrementId()); ?>
+            </a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedAmount())): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Amount')); ?></td>
+        <td class="stripe-amount">
+            <strong>
+                <?php if ($block->isMultiShipping()): ?>
+                    <?= /* @noEscape */ $block->getFormattedMultishippingAmount(); ?>
+                <?php else: ?>
+                    <?= /* @noEscape */ $block->getFormattedAmount(); ?>
+                <?php endif; ?>
+            </strong>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedSubscriptionAmount())): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Subscription amount')); ?></td>
+        <td class="stripe-subscription-amount">
+            <?= /* @noEscape */ $block->getFormattedSubscriptionAmount(); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getPreviousSubscriptionAmount())): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Previous subscription amount')); ?></td>
+        <td class="stripe-subscription-amount">
+            <?= /* @noEscape */ $block->getPreviousSubscriptionAmount(); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedNewSubscriptionAmount())): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('New subscription amount')); ?></td>
+        <td class="stripe-subscription-amount">
+            <?= /* @noEscape */ $block->getFormattedNewSubscriptionAmount(); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getNewSubscriptionOrderIncrementId())): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('New subscription order')); ?></td>
+        <td class="stripe-subscription-amount">
+            <a href="<?= $block->escapeUrl($block->getSubscriptionOrderUrl($block->getNewSubscriptionOrderIncrementId())); ?>" target="_blank">
+                #<?= $block->escapeHtml($block->getNewSubscriptionOrderIncrementId()); ?>
+            </a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    </tbody>
+</table>

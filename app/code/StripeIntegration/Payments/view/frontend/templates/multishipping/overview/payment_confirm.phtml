@@ -1,0 +1,16 @@
+<?php if ($block->willPayWithStripe()): ?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "StripeIntegration_Payments/js/multishipping/checkout-config-check": {
+                "storeCode": "<?= /* @noEscape */ $block->escapeJs($block->getStoreCode()); ?>"
+            },
+            "StripeIntegration_Payments/js/multishipping/payment-confirm": {
+                "hasPaymentMethod": <?= /* @noEscape */ $block->hasPaymentMethod(); ?>,
+                "billingUrl": "<?= $block->escapeJs($block->getUrl('multishipping/checkout/billing')); ?>",
+                "stripeParams": <?= /* @noEscape */ $block->getStripeParams(); ?>
+            }
+        }
+    }
+</script>
+<?php endif; ?>

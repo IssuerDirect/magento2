@@ -1,0 +1,16 @@
+<?php if ($block->isEnabled("shopping_cart_page")) : ?>
+    <div id="payment-request-button-cart" class="payment-request-button cart"></div>
+    <script type="text/x-magento-init">
+        {
+            "#payment-request-button-cart": {
+                "StripeIntegration_Payments/js/stripe_payments_express/initializer": {
+                    "locationDetails": {
+                        "location": "cart"
+                    },
+                    "walletParams": <?= /* @noEscape */ $block->initParams->getWalletParams(); ?>,
+                    "buttonConfig": <?= /* @noEscape */ $block->getButtonConfig(); ?>
+                }
+            }
+        }
+    </script>
+<?php endif; ?>

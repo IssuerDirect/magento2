@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="advanced_configuration" translate="label" type="text" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Advanced Configuration</label>
+        <comment><![CDATA[<span class="message message-warning">Enabling IC+ features without being on IC+ pricing will crash your checkout page. Documentation on these settings can be found <a href="https://docs.stripe.com/use-stripe-apps/adobe-commerce/payments/configuration#advanced-configuration" target="_blank">here</a>.</span>]]></comment>
+        <field id="manual_authentication_rest_api" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Place order first (REST API)</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\PlaceOrderFirst</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/manual_authentication_rest_api</config_path>
+        </field>
+        <field id="manual_authentication_graphql_api" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Place order first (GraphQL API)</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\PlaceOrderFirst</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/manual_authentication_graphql_api</config_path>
+        </field>
+        <field id="overcapture_enabled" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Overcapture</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/overcapture_enabled</config_path>
+            <comment><![CDATA[Available to users on <a href="https://support.stripe.com/questions/understanding-blended-interchange-pricing" target="_blank">IC+ pricing</a>.]]></comment>
+        </field>
+        <field id="multicapture_enabled" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Multicapture</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/multicapture_enabled</config_path>
+            <comment><![CDATA[Available to users on <a href="https://support.stripe.com/questions/understanding-blended-interchange-pricing" target="_blank">IC+ pricing</a>.]]></comment>
+        </field>
+        <field id="extended_authorizations_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Extended authorizations</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/extended_authorizations_enabled</config_path>
+            <comment><![CDATA[Available to users on <a href="https://support.stripe.com/questions/understanding-blended-interchange-pricing" target="_blank">IC+ pricing</a>.]]></comment>
+        </field>
+        <field id="msi_installments_enabled" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Meses sin intereses</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/msi_installments_enabled</config_path>
+            <comment><![CDATA[See <a href="https://docs.stripe.com/payments/mx-installments#requirements" target="_blank">compatibility requirements</a>.]]></comment>
+        </field>
+        <field id="payment_line_items" translate="label" type="select" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Send payment line items to Stripe</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/payment_line_items</config_path>
+            <comment><![CDATA[Cost savings for eligible IC+ users. <a href="https://docs.stripe.com/payments/payment-line-items" target="_blank">Learn more</a>.]]></comment>
+        </field>
+        <field id="send_missing_order_emails" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Send missing order emails</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/send_missing_order_emails</config_path>
+        </field>
+        <field id="automatic_webhooks_configuration" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Automatic webhooks configuration</label>
+            <source_model>StripeIntegration\Payments\Model\Adminhtml\Source\Enabled</source_model>
+            <config_path>payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration</config_path>
+        </field>
+    </group>
+</include>

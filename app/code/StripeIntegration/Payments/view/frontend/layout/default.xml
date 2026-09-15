@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<page xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <head>
+    <css src="StripeIntegration_Payments::css/wallets.css"/>
+  </head>
+  <body>
+    <referenceBlock name="minicart">
+      <arguments>
+        <argument name="jsLayout" xsi:type="array">
+          <item name="components" xsi:type="array">
+            <item name="minicart_content" xsi:type="array">
+              <item name="children" xsi:type="array">
+                <item name="subtotal.container" xsi:type="array">
+                  <item name="children" xsi:type="array">
+                    <item name="payment_method_messaging_element_minicart" xsi:type="array">
+                      <item name="component" xsi:type="string">StripeIntegration_Payments/js/view/checkout/cart/payment_method_messaging_element_minicart</item>
+                      <item name="config" xsi:type="array">
+                        <item name="template" xsi:type="string">StripeIntegration_Payments/checkout/cart/payment_method_messaging_element_minicart</item>
+                        <item name="selector" xsi:type="string">payment-method-messaging-element-minicart</item>
+                      </item>
+                    </item>
+                  </item>
+                </item>
+              </item>
+            </item>
+          </item>
+        </argument>
+      </arguments>
+    </referenceBlock>
+  </body>
+</page>

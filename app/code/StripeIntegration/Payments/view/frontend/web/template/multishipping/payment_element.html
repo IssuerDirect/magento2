@@ -1,0 +1,24 @@
+<div class="payment-method stripe-payments"
+  data-bind="
+    css: {
+      '_active': (getCode() == isChecked())
+    }">
+
+  <div class="payment-method-content" data-bind="if: stripePaymentsError()">
+    <p class="message message-error error">
+      <!-- ko i18n: stripePaymentsError() --><!-- /ko -->
+    </p>
+  </div>
+
+  <div class="payment-method-content stripe-payments-card-form" data-bind="blockLoader: isLoading">
+
+    <div id="stripe-payment-element" data-bind="afterRender: onContainerRendered"></div>
+
+    <div class="errors-container" style="margin-top:10px;">
+      <!-- ko foreach: getRegion('messages') -->
+      <!-- ko template: getTemplate() --><!-- /ko -->
+      <!--/ko-->
+    </div>
+  </div>
+
+</div>

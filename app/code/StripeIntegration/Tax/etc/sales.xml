@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
+    <section name="quote">
+        <group name="totals">
+            <!--
+                Sort order 470 places this collector after:
+                  - tax (450) – which triggers the Stripe API call and populates the response
+                  - weee_tax (460)
+                The collector reads the already-populated StripeTax response singleton.
+            -->
+            <item name="stripe_flat_fees"
+                  instance="StripeIntegration\Tax\Model\Quote\Total\StripeFlatFees"
+                  sort_order="470"/>
+        </group>
+    </section>
+</config>

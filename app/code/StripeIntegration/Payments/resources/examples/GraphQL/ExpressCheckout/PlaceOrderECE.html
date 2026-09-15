@@ -1,0 +1,721 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/dahlia/stripe.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style type="text/css">
+        textarea {
+            width: 600px;
+            height: 200px;
+        }
+        input[type="text"] {
+            width: 400px;
+        }
+        button {
+            margin-top: 1em;
+        }
+        .ece-element {
+            min-width: 250px;
+        }
+        .toggle-details, .show-hide {
+            color: #0a6c9f;
+        }
+        .show-hide {
+            font-size: 1rem;
+        }
+        .mutation_container,
+        .init_container {
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body id="app" class="container">
+<h1>Place an order using the Express Checkout Element with a logged in customer</h1>
+
+<p class="alert alert-warning" role="alert">NOTE: Place this file inside your Magento pub/ directory to avoid CORS restrictions.</p>
+<h2 >Configuration</h2>
+<div class="col-md-6 mb-3">
+    <label for="base_url">Base Magento URL</label>
+    <input class="form-control" type="text" id="base_url" name="base_url" value="" onchange="save('base_url')">
+</div>
+<div class="col-md-6 mb-3">
+    <label>Product ID</label>
+    <input class="form-control" type="text" id="product-id" value="1" onchange="save('product-id')">
+</div>
+
+<p>
+    To have a logged in customer when using GraphQL, you will have to get the customer token, and then using that token
+    as a Bearer token for the Authorization parameter of each following request. The request will look like this:
+</p>
+<textarea class="form-control" id="get_customer_token_data">
+mutation {
+    generateCustomerToken(
+        email: "roni_cost@example.com"
+        password: "roni_cost3@example.com"
+    ) {
+        token
+    }
+}
+</textarea>
+<button onclick="post('get_customer_token', addCustomerToken)" class="btn btn-primary">POST</button>
+<pre id="get_customer_token_response" class="alert alert-light"></pre>
+
+
+<p>
+    After you get the token, you need to create a quote for the customer. With the following mutation you will create
+    a quote if the user does not have a quote, or link a previously existing quote for the user if he created one.
+</p>
+<textarea class="form-control" id="create_cart_data">
+query {
+    customerCart {
+        id
+    }
+}
+</textarea>
+<button onclick="post('create_cart', addCustomerCart)" class="btn btn-primary">POST</button>
+<pre id="create_cart_response" class="alert alert-light"></pre>
+
+<div class="description">
+    Once the quote is created, you can start initializing the Express Checkout Element. For the initialization part, the
+    ECE needs to have the
+    <span class="toggle-details" onclick="toggleContainer('stripe_configuration')">configuration</span>
+    data, which contains things like the API keys, API version and configs for the buttons of the payment methods. Also, it needs the
+    <span class="toggle-details" onclick="toggleContainer('init_params')">init parameters</span>
+    like availability countries, address requirements, shipping rates and styling options for the modals.
+</div>
+
+<div id="container_stripe_configuration" class="mutation_container">
+    <h4 tabindex="-1" >Get Stripe Configurations <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            This will return configurations like API keys, API version and button configs from the admin. The location
+            parameter can have the values 'product', 'cart' or 'minicart'.
+        </p>
+        <textarea class="form-control" id="get_stripe_configuration_data">
+query {
+    getStripeECEConfiguration(input: {
+            location: "product"
+        }) {
+        enabled
+        initParams {
+            apiKey
+            locale
+            appInfo {
+                name
+                partner_id
+                url
+                version
+            }
+            options {
+                betas
+            }
+        }
+        buttonConfig
+    }
+}
+</textarea>
+        <pre id="get_stripe_configuration_response" class="alert alert-light"></pre>
+    </div>
+
+</div>
+
+<div id="container_init_params" class="mutation_container">
+    <h4 tabindex="-1" >Get ECE Params <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            This endpoint will return a resolve payload, which will be used in the resolve function for add to cart event,
+            and also an element options component, which are cosmetic settings for the modal which will appear.
+        </p>
+        <p>
+            The parameters are the location from which the ECE is being initialized and the product ID, if it is initialized from
+            a product page.
+        </p>
+        <textarea class="form-control" id="get_ece_params_data">
+mutation {
+    getECEParams(input: {
+        location: "product"
+        productId: "PRODUCT_ID"
+    }) {
+        resolvePayload {
+            shippingRates {
+                id
+                amount
+                displayName
+            }
+        }
+        elementOptions {
+            mode
+            locale
+            appearance {
+                theme
+                variables {
+                    colorText
+                    fontFamily
+                }
+            }
+            currency
+            amount
+        }
+        expressCheckoutOptions {
+            allowedShippingCountries
+            billingAddressRequired
+            emailRequired
+            phoneNumberRequired
+            shippingAddressRequired
+        }
+    }
+}
+</textarea>
+        <pre id="get_ece_params_response" class="alert alert-light"></pre>
+    </div>
+</div>
+
+<div class="init_container">
+    <button onclick="initECE()" id="init-button" class="btn btn-primary">Initialize Express Checkout</button>
+    <div id="ece-element" class="ece-element"></div>
+</div>
+
+<div class="description">
+    Once the ECE is initialized, we assume that we are on a product page. Once you click on the payment method button,
+    the product will be added to the basked in the background.
+</div>
+
+<div id="container_add_to_cart" class="mutation_container">
+    <h4 tabindex="-1" >Add Product To Cart <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            The parameters for the request are the following:
+        </p>
+        <ul>
+            <li>
+                <b>product</b>: the ID of the product added
+            </li>
+            <li>
+                <b>item</b>: the ID of the product added
+            </li>
+            <li>
+                <b>qty</b>: the quantity you want to add to the basket
+            </li>
+            <li>
+                If the product is configurable <b>super_attribute</b>: an object containing key - value pairs of the configurable options ID and value or separate {...super_attribute[ID]: value...} row.
+            </li>
+            <li>
+                If the product is customizable <b>options</b>: formed in the same way as the super_attribute for configurable products
+            </li>
+            <li>
+                If the product is bundled <b>bundle_option and bundle_option_qty</b>: formed in the same way as for the previous product types
+            </li>
+        </ul>
+        <p>
+            This is how the request components can be formatted. They will be kept in a JSON format and then added to the mutation, because
+            based on the product type that you want to add, the structure can become more complex.
+        </p>
+        <textarea class="form-control" id="add_to_cart_request">
+            {
+                "product": "PRODUCT_ID",
+                "item": "PRODUCT_ID",
+                "qty": 1
+
+                // Uncomment your preference and add the ID - value pairs for the options if you have other types of products
+
+                // 1st alternative for configurable products
+                // "super_attribute": {
+                //     "ID1": value1,
+                //     "ID2": value2
+                // },
+                // 2nd alternative configurable products
+                // "super_attribute[ID1]": value1,
+                // "super_attribute[ID2]": value2,
+
+                // 1st alternative for customizable products
+                // "options": {
+                //     "ID1": value,
+                //     "ID2": value2
+                // },
+                // 2nd alternative for customizable products
+                // "options[ID1]": value1,
+                // "options[ID2]": value2
+
+                // Options for the Bundle products
+                // "bundle_option[ID1]": "value1",
+                // "bundle_option[ID2]": "value2",
+                // "bundle_option[ID3]": "value3",
+                // "bundle_option[ID4]": "value1",
+                // "bundle_option_qty[ID1]": "value",
+                // "bundle_option_qty[ID2]": "value",
+                // "bundle_option_qty[ID3]": "value",
+                // "bundle_option_qty[ID4]": "value"
+            }
+        </textarea>
+        <p>
+            After selecting the product and other options if necessary, they will be passed to the mutation as its' parameter.
+        </p>
+        <textarea class="form-control" id="add_product_data">
+mutation addProductToCart($params: String) {
+    addToCart(input: {
+        params: $params,
+    })
+}
+</textarea>
+        <pre id="add_product_response" class="alert alert-light"></pre>
+    </div>
+
+</div>
+
+<div class="description">
+    After the product is added to the basket, based on your addresses saved against the selected payment method, you will
+    either be prompted to add a shipping address, or an address from the saved addresses will be selected automatically.
+    Regardless of the situation, this will be handled by the 'shippingaddresschange' event of the ECE which calls the address changed
+    endpoint.
+</div>
+
+<div id="container_address_changed" class="mutation_container">
+    <h4 tabindex="-1" >Change the shipping address <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            The newAddress parameter is taken from the event data
+        </p>
+        <p>
+            The result of the endpoint call will be used for resolving the processed event, which updates the totals on the ECE.
+        </p>
+        <textarea class="form-control" id="shipping_address_changed_data">
+mutation shippingAddressChanged($newAddress: ECEAddress) {
+    eceShippingAddressChanged(input: {
+        location: "product"
+        newAddress: $newAddress
+    }) {
+        resolvePayload {
+            lineItems {
+                name
+                amount
+            }
+            shippingRates {
+                id
+                amount
+                displayName
+            }
+        }
+    }
+}
+</textarea>
+        <pre id="shipping_address_changed_response" class="alert alert-light"></pre>
+    </div>
+</div>
+
+<div class="description">
+    Once the shipping address is set, you will be able to select or change your shipping rate. This will be handled by
+    the 'shippingratechange' event on the ECE, and it should call the rates changed endpoint.
+</div>
+
+<div id="container_rate_changed" class="mutation_container">
+    <h4 tabindex="-1" >Change the shipping rate <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            The address parameter needs to be the latest address processed in the 'address changed' so it's recommended
+            the address be saved when it is handled. You will have this address from the init process for the ECE, either from when you
+            add the address manually or have one already saved in your selected payment method.
+        </p>
+        <p>
+            The shipping method parameter is also taken from the processed event.
+        </p>
+        <p>
+            The result of the endpoint call will be used for resolving the processed event, which updates the totals on the ECE.
+        </p>
+        <textarea class="form-control" id="shipping_rate_changed_data">
+mutation shippingRateChanged(
+        $address: ECEAddress
+        $shippingMethodId: String
+    ) {
+    eceShippingRateChanged(input: {
+        shippingMethodId: $shippingMethodId
+        address: $address
+    }) {
+        resolvePayload {
+            lineItems {
+                name
+                amount
+            }
+            shippingRates {
+                id
+                amount
+                displayName
+            }
+        }
+    }
+}
+</textarea>
+        <pre id="shipping_rate_changed_response" class="alert alert-light"></pre>
+    </div>
+</div>
+
+<div class="description">
+    After all the selections are made, when clicking the payment button, the 'confirm' event will be triggered. This
+    event should use the place order endpoint.
+</div>
+<div id="container_place_order" class="mutation_container">
+    <h4 tabindex="-1" >Place Order <span class="show-hide">show</span></h4>
+    <div class="details">
+        <p>
+            The result parameter will contain data from the processed event and the confirmation token created with the
+            Stripe API.
+        </p>
+        <textarea class="form-control" id="place_order_data">
+mutation PlaceOrder($payload: String!) {
+    ecePlaceOrder(input: {
+        location: "product"
+        result: $payload
+    }) {
+        client_secret
+        redirect
+    }
+}
+</textarea>
+        <pre id="place_order_response" class="alert alert-light"></pre>
+    </div>
+</div>
+
+<br>
+<script>
+    var customerToken = null;
+    var cartId = null;
+    var stripe = null;
+    var elements = null;
+    var expressCheckoutElement = null;
+    var paymentMethod = null;
+    var stripeConfiguration = null;
+    var eceElementId = '#ece-element';
+    var eceParams = null;
+    var mode = null;
+    var clickResolvePayload = null;
+    var processedEvent = null;
+    var shippingAddress = null;
+    var $productId = $('#product-id');
+
+    var $ = jQuery;
+    $(".details").hide();
+
+    var toggleContainer = function(component)
+    {
+        var element = $('#container_' + component);
+        element.children('h4').first().focus();
+    }
+
+    $('.show-hide').on('click', function () {
+        const $details = $(this).parent().siblings('.details');
+        $details.toggle()
+
+        $(this).text($details.is(':visible') ? 'hide' : 'show');
+    });
+
+    var initStripe = function()
+    {
+        stripe = Stripe(stripeConfiguration.initParams.apiKey, stripeConfiguration.initParams.options);
+    };
+
+    function postPromise(action) {
+        return new Promise((resolve, reject) => {
+            post(action, resolve, reject);
+        });
+    }
+
+    var initECE = async function()
+    {
+        if (!$productId.val()) {
+            alert('Please add a product ID');
+            $productId.focus();
+            return;
+        } else {
+            var request = $('#add_to_cart_request');
+            var $productAddToCart = request.val().replaceAll('PRODUCT_ID', $productId.val());
+            request.val($productAddToCart);
+        }
+
+        var [config, initParams] = await Promise.all([
+            postPromise('get_stripe_configuration'),
+            postPromise('get_ece_params')
+        ]);
+
+        addStripeConfiguration(config);
+        addECEParams(initParams);
+
+        var DOMElement = $(eceElementId);
+        initStripe();
+
+        elements = stripe.elements(eceParams.elementOptions);
+
+        var expressCheckoutSettings = stripeConfiguration.buttonConfig;
+        if (typeof stripeConfiguration.buttonConfig === 'string')
+            expressCheckoutSettings = JSON.parse(stripeConfiguration.buttonConfig);
+
+        if (eceParams.expressCheckoutOptions)
+            expressCheckoutSettings = Object.assign({}, expressCheckoutSettings, eceParams.expressCheckoutOptions);
+
+        expressCheckoutElement = elements.create('expressCheckout', expressCheckoutSettings);
+
+        expressCheckoutElement.on('ready', function (result) {
+            if (result.availablePaymentMethods)
+            {
+                expressCheckoutElement.on('click', function(event) {
+                    event.isClick = true;
+                    onClickAtProductPage(event);
+                });
+                expressCheckoutElement.on('shippingaddresschange', shippingAddressChange);
+                expressCheckoutElement.on('shippingratechange', shippingRateChange);
+                expressCheckoutElement.on('confirm', onConfirm.bind(null, 'product'));
+                $('#init-button').hide();
+                alert('When you click a button on the ECE, you will add the product with the ID ' + $productId.val() + ' to the basket. ' +
+                    'If you want to add another product or a product of another type, please check the Add Product To Cart section.'
+                );
+
+            }
+            else
+            {
+                DOMElement.hide();
+            }
+        });
+
+        expressCheckoutElement.on('loaderror', function(err) {
+            console.error('ExpressCheckout loaderror:', err?.error?.message || err);
+        });
+
+        expressCheckoutElement.mount(eceElementId);
+    };
+
+    var getShippingAddressFrom = function(eceShippingAddress)
+    {
+        if (!eceShippingAddress)
+            return null;
+
+        // For some countries like Japan, the ECE does not set the City, only the region
+        if (eceShippingAddress.city.length === 0 && eceShippingAddress.region.length > 0)
+            eceShippingAddress.city = eceShippingAddress.region;
+
+        return eceShippingAddress;
+    };
+
+    var shippingAddressChange = function(event) {
+        processedEvent = event;
+        shippingAddress = getShippingAddressFrom(processedEvent.address)
+        post('shipping_address_changed', afterAdressChange)
+    };
+
+    var shippingRateChange = function(event) {
+        processedEvent = event;
+        post('shipping_rate_changed', afterRateChange)
+    };
+
+    var onConfirm = function (location, event) {
+        var paymentMethodData = {
+            elements: elements,
+            params: {
+                billing_details: event.billingDetails
+            },
+            shipping: event.shippingAddress
+        };
+
+        elements.submit().then(function() {
+            stripe.createConfirmationToken(paymentMethodData).then(function(createConfirmationTokenResult) {
+                if (createConfirmationTokenResult.error)
+                {
+                    console.error(createConfirmationTokenResult.error.message);
+                }
+                else if (createConfirmationTokenResult.confirmationToken)
+                {
+                    event.confirmationToken = createConfirmationTokenResult.confirmationToken;
+                    processedEvent = event;
+                    post('place_order')
+                }
+            })
+        })
+    }
+
+    var afterAdressChange = function (response) {
+        var resolvePayload = response.data.eceShippingAddressChanged.resolvePayload;
+        resolveEvent(processedEvent, resolvePayload)
+    }
+
+    var afterRateChange = function (response) {
+        var resolvePayload = response.data.eceShippingRateChanged.resolvePayload;
+        resolveEvent(processedEvent, resolvePayload)
+    }
+
+    var onClickAtProductPage = function (event) {
+
+        var addToCartPromise = new Promise(function(resolve, reject) {
+            post('add_product', resolve, reject);
+        })
+
+        addToCartPromise.then(function () {
+            console.log('Add To Cart finished')
+        });
+
+        resolveEvent(event, clickResolvePayload);
+    };
+
+    var getLineItemsTotal = function(lineItems) {
+        var total = 0;
+
+        if (!lineItems || !lineItems.length)
+            return total;
+
+        for (var i = 0; i < lineItems.length; i++) {
+            total += lineItems[i].amount;
+        }
+
+        return total;
+    }
+
+    var resolveEvent = async function(event, resolvePayload) {
+        if (!event)
+            return;
+
+        var total = getLineItemsTotal(resolvePayload.lineItems);
+
+        if (resolvePayload.lineItems && !event.isClick && mode !== "setup")
+        {
+            if (total > 0)
+            {
+                try
+                {
+                    await elements.update({amount: total});
+                }
+                catch (e)
+                {
+                    console.error('elements.update failed:', e);
+                }
+            }
+            else
+            {
+                delete resolvePayload.lineItems;
+            }
+
+            event.resolve(resolvePayload);
+        }
+        else
+        {
+            if (mode === "setup" && resolvePayload.lineItems)
+            {
+                delete resolvePayload.lineItems;
+            }
+            event.resolve(resolvePayload);
+        }
+    };
+
+    if (localStorage.getItem("base_url"))
+    {
+        $("#base_url").val(localStorage.getItem("base_url"));
+    }
+    else
+    {
+        $("#base_url").val(window.location.protocol + "//" + window.location.hostname);
+    }
+
+    if (localStorage.getItem("sku"))
+    {
+        $("#sku").val(localStorage.getItem("sku").toString());
+    }
+
+    var post = function(step, onSuccess, onError)
+    {
+        var endpoint = $("#base_url").val() + '/graphql';
+        var data = '';
+
+        if (step === 'get_stripe_configuration') {
+            var query = $("#" + step + "_data").val()
+            data = JSON.stringify({ query: query});
+        } else if (step === 'add_product') {
+            var productData = $('#add_to_cart_request').val().replace(/^\s*\/\/.*$/gm, '');
+            var addProductData = JSON.parse(productData);
+            var query = $("#" + step + "_data").val()
+            data = JSON.stringify({ query: query, variables: {params: JSON.stringify(addProductData)} });
+        } else if (step === 'shipping_address_changed') {
+            var query = $("#" + step + "_data").val()
+            data = JSON.stringify({ query: query, variables: {newAddress: processedEvent.address} });
+        } else if (step === 'shipping_rate_changed') {
+            var query = $("#" + step + "_data").val()
+            var shippingMethodId = processedEvent.shippingRate.hasOwnProperty('id') ? processedEvent.shippingRate.id : null;
+            data = JSON.stringify({ query: query, variables: {shippingMethodId: shippingMethodId, address: shippingAddress} });
+        } else if (step === 'place_order') {
+            var query = $("#" + step + "_data").val()
+            data = JSON.stringify({ query: query, variables: {payload: JSON.stringify(processedEvent)} });
+        } else {
+            var query = $("#" + step + "_data").val()
+                .replace("CART_ID", cartId)
+                .replace("PRODUCT_ID", $productId.val());
+            data = JSON.stringify({ query: query});
+        }
+
+        $( "#" + step + "_response" ).html("");
+
+        $.ajax({
+            url: endpoint,
+            type: "POST",
+            data: data,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            beforeSend: function (xhr)
+            {
+                if (customerToken)
+                {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + customerToken);
+                }
+            },
+            success: function(response)
+            {
+                console.log('SUCCESS')
+                $( "#" + step + "_response" ).html( JSON.stringify(response, null, 2));
+                if (typeof onSuccess != "undefined")
+                {
+                    onSuccess(response);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('ERROR')
+                var errorMessage = {
+                    error: errorThrown || textStatus,
+                    status: jqXHR.status,
+                    statusText: jqXHR.statusText,
+                    response: jqXHR.responseJSON || jqXHR.responseText
+                };
+                $( "#" + step + "_response" ).html( JSON.stringify(errorMessage, null, 2));
+                if (typeof onError != "undefined")
+                {
+                    onError();
+                }
+            }
+        });
+    };
+
+    var addCustomerToken = function(response) {
+        if (response.data.generateCustomerToken.token) {
+            customerToken = response.data.generateCustomerToken.token;
+        }
+    }
+
+    var addStripeConfiguration = function(response) {
+        if (response.data.getStripeECEConfiguration) {
+            stripeConfiguration = response.data.getStripeECEConfiguration;
+        }
+    }
+
+    var addCustomerCart = function(response) {
+        if (response.data.customerCart.id) {
+            cartId = response.data.customerCart.id;
+        }
+    }
+
+    var addECEParams = function(response) {
+        if (response.data.getECEParams) {
+            eceParams = response.data.getECEParams;
+            mode = eceParams.elementOptions.mode;
+            clickResolvePayload = eceParams.resolvePayload;
+        }
+    }
+
+    var save = function(key)
+    {
+        var value = $("#" + key).val();
+        localStorage.setItem(key, value);
+    }
+</script>
+</body>

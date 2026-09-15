@@ -1,0 +1,20 @@
+<!--@subject A subscription was set up, but the order could not be saved @-->
+<!--@vars {
+"var subscriptionId":"Subscription ID",
+"var subscriptionLink":"Subscription Link",
+"var errorMessage":"The error message",
+"var errorStackTrace":"The error stack trace"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p>A subscription (<a href="{{var subscriptionLink}}">{{var subscriptionId}}</a>) was successfully set up in Stripe,
+    but a checkout crash prevented the order from being saved in Magento.</p>
+
+<p>The checkout crash was:</p>
+
+<code><pre>{{var errorMessage}}</pre></code>
+
+<code><pre>{{var errorStackTrace}}</pre></code>
+
+{{template config_path="design/email/footer_template"}}

@@ -1,0 +1,43 @@
+<p><?= $block->escapeHtml($block->getMethod()->getTitle()) ?></p>
+
+<?php if ($block->getInvoice() && $block->getInvoice()->getId()): ?>
+<table class="admin__table-secondary order-information-table stripe payment-info">
+  <tbody>
+    <?php if ($block->getInvoiceURL()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Pay invoice')); ?></th>
+        <td class="invoice">
+            <a href="<?= $block->escapeUrl($block->getInvoiceURL()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("Click to pay"));  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getInvoicePDF()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Download invoice')); ?></th>
+        <td class="invoice-pdf">
+            <a href="<?= $block->escapeUrl($block->getInvoicePDF()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("Download PDF"));  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <tr>
+      <th><?= $block->escapeHtml(__('Invoice')); ?></th>
+      <td><a target="_blank" href="<?= $block->escapeUrl($block->getInvoice()->getStripeUrl()); ?>"><?= $block->escapeHtml(__("View in Stripe")); ?></a></td>
+    </tr>
+    <tr>
+      <th><?= $block->escapeHtml(__('Status')); ?></th>
+      <td><?= $block->escapeHtml($block->getStatus()); ?></td>
+    </tr>
+    <tr>
+      <th><?= $block->escapeHtml(__('Payment due')); ?></th>
+      <td><?= $block->escapeHtml($block->getDateDue()); ?></td>
+    </tr>
+    <tr>
+      <th><?= $block->escapeHtml(__('Customer')); ?></th>
+      <td><a target="_blank" href="<?= $block->escapeUrl($block->getCustomerUrl()); ?>"><?= $block->escapeHtml(__("View in Stripe")); ?></a></td>
+    </tr>
+  </tbody>
+</table>
+<?php else: ?>
+  <p><?= $block->escapeHtml(__("The invoice for this order could not be found.")); ?></p>
+<?php endif; ?>

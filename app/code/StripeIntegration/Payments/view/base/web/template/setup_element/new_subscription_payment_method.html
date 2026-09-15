@@ -1,0 +1,43 @@
+<div class="add-new-payment-method">
+    <div class="payment-method stripe-payments">
+
+        <div class="payment-method-content" data-bind="if: stripePaymentsError()">
+            <p class="message message-error error">
+                <!-- ko i18n: stripePaymentsError() --><!-- /ko -->
+            </p>
+        </div>
+
+        <div class="payment-method-content stripe-payments-card-form" data-bind="blockLoader: isLoading">
+
+            <div class="stripe-payments-elements no-wrap">
+                <div id="stripe-setup-element" data-bind="afterRender: onContainerRendered">
+                    <!-- a Stripe Payment Element will be inserted here. -->
+                </div>
+            </div>
+
+            <div data-bind="if: permanentError, visible: permanentError" class="stripe-permanent-error">
+                <span><!-- ko i18n: permanentError --><!-- /ko --></span>
+            </div>
+
+            <!-- Magento messages region -->
+            <!-- ko foreach: getRegion('messages') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+
+            <div class="actions-toolbar" id="actions-toolbar" data-bind="ifnot: permanentError">
+                <div class="primary">
+                    <button class="action primary" type="submit"
+                            data-bind="click: onClick, attr: {title: $t('Select payment method')}">
+                        <span data-bind="i18n: 'Select payment method'"></span>
+                    </button>
+                </div>
+                <div class="secondary">
+                    <a href="#" class="action secondary" data-bind="click: onCancel"><span data-bind="i18n: 'Cancel'"></span></a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

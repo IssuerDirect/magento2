@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="StripeSimpleProduct" type="product">
+        <data key="name">Simple Product</data>
+        <data key="sku">simple-product</data>
+        <data key="urlKey">simple-product</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="StripeSimpleProduct2" type="product">
+        <data key="name">Simple Product 2</data>
+        <data key="sku">simple-product-2</data>
+        <data key="urlKey">simple-product-2</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="StripeVirtualProduct" type="product">
+        <data key="name">Virtual Product</data>
+        <data key="sku">virtual-product</data>
+        <data key="urlKey">virtual-product</data>
+        <data key="type_id">virtual</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">8</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="quantity">100</data>
+        <data key="weight">0</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="SimpleMonthlySubscriptionProduct" type="product">
+        <data key="name">Simple Monthly Subscription</data>
+        <data key="sku">simple-monthly-subscription-product</data>
+        <data key="urlKey">simple-monthly-subscription</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="SimpleQuarterlySubscriptionProduct" type="product">
+        <data key="name">Simple Quarterly Subscription</data>
+        <data key="sku">simple-quarterly-subscription</data>
+        <data key="urlKey">simple-quarterly-subscription</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">3</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="SimpleMonthlySubscriptionInitialFeeProduct" type="product">
+        <data key="name">Simple Monthly Subscription + Initial Fee</data>
+        <data key="sku">simple-monthly-subscription-initial-fee-product</data>
+        <data key="urlKey">simple-monthly-subscription-initial-fee</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="stripe_sub_initial_fee">3</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="SimpleTrialMonthlySubscriptionProduct" type="product">
+        <data key="name">Simple Trial Monthly Subscription</data>
+        <data key="sku">simple-trial-monthly-subscription</data>
+        <data key="urlKey">simple-trial-monthly-subscription</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="stripe_sub_trial">14</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="SimpleTrialMonthlySubscriptionInitialFeeProduct" type="product">
+        <data key="name">Simple Trial Monthly Subscription + Initial Fee</data>
+        <data key="sku">simple-trial-monthly-subscription-initial-fee-product</data>
+        <data key="urlKey">simple-trial-monthly-subscription-initial-fee</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="stripe_sub_trial">14</data>
+        <data key="stripe_sub_initial_fee">3</data>
+        <data key="quantity">100</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="VirtualMonthlySubscriptionProduct" type="product">
+        <data key="name">Virtual Monthly Subscription</data>
+        <data key="sku">virtual-monthly-subscription-product</data>
+        <data key="urlKey">virtual-monthly-subscription</data>
+        <data key="type_id">virtual</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="quantity">100</data>
+        <data key="weight">0</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="VirtualTrialMonthlySubscriptionProduct" type="product">
+        <data key="name">Virtual Trial Monthly Subscription</data>
+        <data key="sku">virtual-trial-monthly-subscription-product</data>
+        <data key="urlKey">virtual-trial-monthly-subscription</data>
+        <data key="type_id">virtual</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="stripe_sub_trial">14</data>
+        <data key="quantity">100</data>
+        <data key="weight">0</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+    <entity name="VirtualTrialMonthlySubscriptionInitialFeeProduct" type="product">
+        <data key="name">Virtual Trial Monthly Subscription + Initial Fee</data>
+        <data key="sku">virtual-monthly-subscription-initial-fee-product</data>
+        <data key="urlKey">virtual-monthly-subscription-initial-fee</data>
+        <data key="type_id">virtual</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">10</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="stripe_sub_enabled">true</data>
+        <data key="stripe_sub_interval">month</data>
+        <data key="stripe_sub_interval_count">1</data>
+        <data key="stripe_sub_trial">14</data>
+        <data key="stripe_sub_initial_fee">3</data>
+        <data key="quantity">100</data>
+        <data key="weight">0</data>
+        <requiredEntity type="product_extension_attribute">EavStock100</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+</entities>

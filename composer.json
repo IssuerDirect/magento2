@@ -69,7 +69,6 @@
         "laminas/laminas-view": "^2.36",
         "league/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "mage2pro/stripe": "^2.8",
         "magento/composer": "^1.10.2-beta4",
         "magento/composer-dependency-version-audit-plugin": "^0.1",
         "magento/magento-composer-installer": ">=0.4.0",
@@ -89,6 +88,7 @@
         "sentry/sentry": "^4.31",
         "spomky-labs/aes-key-wrap": "^7.0",
         "stomp-php/stomp-php": "^5.1",
+        "stripe/stripe-php": "~17.6",
         "symfony/cache": "^7.4",
         "symfony/console": "^7.4",
         "symfony/intl": "^7.4",
@@ -365,11 +365,6 @@
         "gene/bluefoot": "*"
     },
     "extra": {
-        "patches": {
-            "mage2pro/core": {
-                "Remove no-op ReflectionProperty::setAccessible() calls, deprecated since PHP 8.5 (already inert since PHP 8.1)": "patches/mage2pro-core-php85-setaccessible.patch"
-            }
-        },
         "component_paths": {
             "trentrichardson/jquery-timepicker-addon": "lib/web/jquery/jquery-ui-timepicker-addon.js",
             "components/jquery": [

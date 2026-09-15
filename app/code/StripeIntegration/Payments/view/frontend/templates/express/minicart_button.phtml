@@ -1,0 +1,19 @@
+<?php if ($block->isEnabled("minicart")) : ?>
+<div class="stripe-payments-express-minicart">
+    <div id="payment-request-button-minicart" class="payment-request-button"></div>
+    <script type="text/x-magento-init">
+        {
+            "#payment-request-button-minicart": {
+                "StripeIntegration_Payments/js/stripe_payments_express/initializer": {
+                    "locationDetails": {
+                        "location": "minicart",
+                        "activeLocations": <?= /* @noEscape */ $block->getActiveLocations(); ?>
+                    },
+                    "walletParams": <?= /* @noEscape */ $block->initParams->getWalletParams(); ?>,
+                    "buttonConfig": <?= /* @noEscape */ $block->getButtonConfig(); ?>
+                }
+            }
+        }
+    </script>
+</div>
+<?php endif; ?>

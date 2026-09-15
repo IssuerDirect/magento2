@@ -1,0 +1,46 @@
+<?php
+    $methods = $block->getSavedPaymentMethods();
+?>
+
+<div class="stripe-saved-payment-methods">
+    <?php if (empty($methods)): ?>
+        <input type="hidden" id="new_card" value="" name="payment[payment_method]" />
+    <?php else: ?>
+        <?php foreach ($methods as $method): ?>
+            <div class="saved-payment-method-option">
+                <input type="radio" id="<?= $block->escapeHtmlAttr($method['id']); ?>" value="<?= $block->escapeHtmlAttr($method['id']); ?>" name="payment[payment_method]" />
+                <label for="<?= $block->escapeHtmlAttr($method['id']); ?>">
+                    <span class="payment-method-name">
+                        <?php
+                            if (isset($method['brand']))
+                                echo $block->escapeHtml(ucwords($method['brand'])) . "&nbsp;&nbsp;";
+
+                            echo $block->escapeHtml($method['label']);
+                        ?>
+                    </span>
+                    <img src="<?= $block->escapeHtmlAttr($method['icon']); ?>" class="payment-method-icon" />
+                </label>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="saved-payment-method-option">
+            <input type="radio" id="new_card" value="" name="payment[payment_method]" data-validate="{'validate-no-empty': true}" />
+            <label for="new_card">
+                <span class="payment-method-name"><?= $block->escapeHtml(__("Use a new card")); ?></span>
+            </label>
+        </div>
+    <?php endif; ?>
+
+    <div id="new_card_container" style="display: none;">
+        <div id="stripe-payment-element" data-init-params="<?= $block->escapeHtmlAttr($block->getAdminInitParams()); ?>"></div>
+        <input id="save_payment_method" type="checkbox" name="payment[save_payment_method]" class="admin__control-checkbox" <?= $block->getSavePaymentMethod() ? 'checked="checked"' : ''; ?> value="1" />
+        <label class="save-payment-method admin__field-label" for="save_payment_method">
+            <span><?= $block->escapeHtml(__("Save card on customer")); ?></span>
+        </label>
+    </div>
+
+    <label for="payment[payment_method]" class="stripe mage-error" id="payment[payment_method]-error" style="display: none;">
+        <?= $block->escapeHtml(__("Please select a payment method.")); ?>
+    </label>
+
+</div>

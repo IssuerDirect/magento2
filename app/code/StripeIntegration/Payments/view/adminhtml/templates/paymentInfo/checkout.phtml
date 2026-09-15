@@ -1,0 +1,130 @@
+<h4>
+    <span class="stripe-method-title"><?= $block->escapeHtml(__('Stripe Checkout - %1', $block->getTitle())); ?></span>
+
+    <?php if (!empty($block->getPaymentMethodCode())): ?>
+    <span class="stripe-payment-method">
+        <?php if ($block->getWalletIconUrl()): ?>
+            <img height="24px" style="max-height: 24px; margin-right: 1em" src="<?= $block->escapeUrl($block->getWalletIconUrl()); ?>">
+        <?php endif; ?>
+        <?php if ($block->getPaymentMethodIconUrl()): ?>
+            <img src="<?= $block->escapeUrl($block->getPaymentMethodIconUrl()); ?>" class="stripe-payment-method-icon">
+        <?php endif; ?>
+        <?php if ($block->getPaymentMethodName()): ?>
+            <span class="stripe-payment-method-name"><?= $block->escapeHtml($block->getPaymentMethodName()); ?></span>
+        <?php endif; ?>
+    </span>
+    <?php endif; ?>
+</h4>
+
+<table class="admin__table-secondary order-information-table stripe payment-info">
+  <tbody>
+
+    <?php if (!empty($block->getFormattedAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Amount')); ?></th>
+        <td class="stripe-amount">
+            <strong>
+                <?= $block->escapeHtml($block->getFormattedAmount()); ?>
+            </strong>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedPresentmentAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Amount charged')); ?></th>
+        <td class="stripe-presentment-amount">
+            <?= $block->escapeHtml($block->getFormattedPresentmentAmount()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getPaymentStatus())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Payment status')); ?></th>
+        <td class="stripe-payment-status">
+            <span class="stripe-payment-status-<?= $block->escapeHtmlAttr($block->getPaymentStatus()); ?>">
+                <?= $block->escapeHtml($block->getPaymentStatusName()); ?>
+            </span>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getExpiryDate())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Authorization expires')); ?></th>
+        <td class="stripe-expiry-date">
+            <?= $block->escapeHtml($block->getExpiryDate()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedSubscriptionAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription amount')); ?></th>
+        <td class="stripe-subscription-amount">
+            <?= $block->escapeHtml($block->getFormattedSubscriptionAmount()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getSubscriptionStatus())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription status')); ?></th>
+        <td class="stripe-subscription-status">
+            <span class="stripe-subscription-status-<?= $block->escapeHtmlAttr($block->getSubscriptionStatus()); ?>">
+                <?= $block->escapeHtml($block->getSubscriptionStatusName()); ?>
+            </span>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getRiskScore())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Risk evaluation')); ?></th>
+        <td class="stripe-payment-risk-<?= $block->escapeHtmlAttr($block->getRiskLevelCode()); ?>">
+            <span class="stripe-payment-risk-score <?= $block->escapeHtmlAttr(ucfirst($block->getRiskScore())); ?>">
+                <span class="score-value">
+                    <?= $block->escapeHtml(ucfirst($block->getRiskScore())); ?>
+                </span>
+            </span>
+            <span class="stripe-payment-risk-level"><?= $block->escapeHtml(ucfirst($block->getRiskEvaluation())); ?></span>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getPaymentId()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Payment')); ?></th>
+        <td class="payment">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>payments/<?= $block->escapeUrl($block->getPaymentId()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getSubscription()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription')); ?></th>
+        <td class="subscription">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>subscriptions/<?= $block->escapeUrl($block->getSubscription()->id); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getCustomerId()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Customer')); ?></th>
+        <td class="customer">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>customers/<?= $block->escapeUrl($block->getCustomerId()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getInstallmentsPlan()): ?>
+        <tr>
+            <th><?= $block->escapeHtml(__('Installments')); ?></th>
+            <td class="installments">
+                <?= $block->escapeHtml($block->getInstallmentsPlan()); ?>
+            </td>
+        </tr>
+    <?php endif;?>
+
+    </tbody>
+</table>

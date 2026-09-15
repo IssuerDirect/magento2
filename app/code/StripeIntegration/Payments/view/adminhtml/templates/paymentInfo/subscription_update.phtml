@@ -1,0 +1,130 @@
+<h4>
+    <span class="stripe-method-title"><?= $block->escapeHtml(__('Stripe - Customer request for subscription update')); ?></span>
+</h4>
+
+<table class="admin__table-secondary order-information-table stripe payment-info">
+  <tbody>
+
+    <?php if ($block->getOriginalSubscriptionOrderIncrementId()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Previous subscription order')); ?></th>
+        <td class="stripe-original-order">
+            <a href="<?= $block->escapeUrl($block->getSubscriptionOrderUrl($block->getOriginalSubscriptionOrderIncrementId())); ?>" target="_blank">
+                #<?= $block->escapeHtml($block->getOriginalSubscriptionOrderIncrementId()); ?>
+            </a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Amount')); ?></th>
+        <td class="stripe-amount">
+            <strong>
+                <?php if ($block->isMultiShipping()): ?>
+                    <?= $block->escapeHtml($block->getFormattedMultishippingAmount()); ?>
+                <?php else: ?>
+                    <?= $block->escapeHtml($block->getFormattedAmount()); ?>
+                <?php endif; ?>
+            </strong>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedSubscriptionAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription amount')); ?></th>
+        <td class="stripe-subscription-amount">
+            <?= $block->escapeHtml($block->getFormattedSubscriptionAmount()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getPreviousSubscriptionAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Previous subscription amount')); ?></th>
+        <td class="stripe-subscription-amount">
+            <?= $block->escapeHtml($block->getPreviousSubscriptionAmount()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getFormattedNewSubscriptionAmount())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('New subscription amount')); ?></th>
+        <td class="stripe-subscription-amount">
+            <?= $block->escapeHtml($block->getFormattedNewSubscriptionAmount()); ?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getNewSubscriptionOrderIncrementId())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('New subscription order')); ?></th>
+        <td class="stripe-subscription-amount">
+            <a href="<?= $block->escapeUrl($block->getSubscriptionOrderUrl($block->getNewSubscriptionOrderIncrementId())); ?>" target="_blank">
+                #<?= $block->escapeHtml($block->getNewSubscriptionOrderIncrementId()); ?>
+            </a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getSubscriptionStatus())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription status')); ?></th>
+        <td class="stripe-subscription-status">
+            <span class="stripe-subscription-status-<?= $block->escapeHtmlAttr($block->getSubscriptionStatus()); ?>">
+                <?= $block->escapeHtml($block->getSubscriptionStatusName()); ?>
+            </span>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if (!empty($block->getRiskScore())): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Risk evaluation')); ?></th>
+        <td class="stripe-payment-risk-<?= $block->escapeHtmlAttr($block->getRiskLevelCode()); ?>">
+            <span class="stripe-payment-risk-score <?= $block->escapeHtmlAttr(ucfirst($block->getRiskScore())); ?>">
+                <span class="score-value">
+                    <?= $block->escapeHtml(ucfirst($block->getRiskScore())); ?>
+                </span>
+            </span>
+            <span class="stripe-payment-risk-level"><?= $block->escapeHtml(ucfirst($block->getRiskEvaluation())); ?></span>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getPaymentId()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Payment')); ?></th>
+        <td class="payment">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>payments/<?= $block->escapeUrl($block->getPaymentId()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getSubscription()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Subscription')); ?></th>
+        <td class="subscription">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>subscriptions/<?= $block->escapeUrl($block->getSubscription()->id); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getCustomerId()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Customer')); ?></th>
+        <td class="customer">
+            <a href="https://dashboard.stripe.com/<?= $block->escapeUrl($block->getMode()); ?>customers/<?= $block->escapeUrl($block->getCustomerId()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View in Stripe")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($block->getVoucherLink()): ?>
+    <tr>
+        <th><?= $block->escapeHtml(__('Voucher')); ?></th>
+        <td class="customer">
+            <a href="<?= $block->escapeUrl($block->getVoucherLink()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("View voucher")); ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    </tbody>
+</table>

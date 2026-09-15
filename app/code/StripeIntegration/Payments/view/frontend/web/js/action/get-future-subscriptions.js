@@ -1,0 +1,28 @@
+define(
+    [
+        'Magento_Checkout/js/model/url-builder',
+        'mage/storage',
+        'Magento_Checkout/js/model/error-processor',
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Checkout/js/model/quote'
+    ],
+    function (urlBuilder, storage, errorProcessor, fullScreenLoader, quote) {
+        'use strict';
+        return function (quote)
+        {
+            var serviceUrl = urlBuilder.createUrl('/stripe/payments/get_future_subscriptions', {});
+
+            var payload = {
+                billingAddress: quote.billingAddress()
+            };
+
+            if (quote.shippingAddress())
+                payload.shippingAddress = quote.shippingAddress();
+
+            if (quote.shippingMethod())
+                payload.shippingMethod = quote.shippingMethod();
+
+            return storage.post(serviceUrl, JSON.stringify(payload));
+        };
+    }
+);

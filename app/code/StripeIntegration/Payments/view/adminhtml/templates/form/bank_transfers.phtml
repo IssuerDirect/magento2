@@ -1,0 +1,16 @@
+<fieldset id="payment_form_stripe_payments_bank_transfers" class="stripe-payments standard-form admin__fieldset" style="display:none;">
+  <div class="fieldset indent">
+    <div class="control payment-method-note">
+      <?= $block->escapeHtml(__('The customer will receive an invoice by email with bank transfer instructions.')); ?>
+    </div>
+
+    <br>
+
+    <h4><?= $block->escapeHtml(__('Payment due')); ?></h4>
+      <div class="admin__control-addon days-due">
+          <input class="admin__control-text" type="text" name="payment[days_due]" id="invoice_days_due" maxlength="3" value="<?= $block->escapeHtmlAttr($block->getDaysDue()); ?>">
+          <label class="admin__addon-suffix" for="invoice_days_due"><?= $block->escapeHtml(__('days')); ?></label>
+      </div>
+      <span class="desc"><?= $block->escapeHtml(__('after the invoice has been sent.')); ?></span>
+  </div>
+</fieldset>

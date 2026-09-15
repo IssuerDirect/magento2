@@ -1,0 +1,23 @@
+<table style="width: 100%">
+  <tbody>
+
+    <?php if (!$block->isPaid() && $block->getInvoiceURL()): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Pay invoice')); ?></td>
+        <td>
+            <a href="<?= $block->escapeUrl($block->getInvoiceURL()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("Click to pay"));  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getInvoicePDF()): ?>
+    <tr>
+        <td><?= $block->escapeHtml(__('Download invoice')); ?></td>
+        <td>
+            <a href="<?= $block->escapeUrl($block->getInvoicePDF()); ?>" target="_blank" rel="noopener noreferrer"><?= $block->escapeHtml(__("Download PDF"));  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    </tbody>
+</table>

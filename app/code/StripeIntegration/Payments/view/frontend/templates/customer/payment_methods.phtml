@@ -1,0 +1,13 @@
+<div data-bind="scope: 'payment_method_stripe_payments'">
+  <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "StripeIntegration_Payments/js/view/customer/payment-methods-initializer": {
+                "initParams": <?= /* @noEscape */ $block->getInitParams(); ?>
+            }
+        }
+    }
+</script>

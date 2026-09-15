@@ -1,17 +1,4 @@
 {
-    "_hash": "c7ce281580d74384b5a74f32e213271d7adeb24806bf9f020c3e78c75d53729f",
-    "patches": {
-        "mage2pro/core": [
-            {
-                "package": "mage2pro/core",
-                "description": "Remove no-op ReflectionProperty::setAccessible() calls, deprecated since PHP 8.5 (already inert since PHP 8.1)",
-                "url": "patches/mage2pro-core-php85-setaccessible.patch",
-                "sha256": "3977b48e889ffbe788b0b24f087743f5f5d6f15f1460f424f09dead62a5d02df",
-                "depth": 1,
-                "extra": {
-                    "provenance": "root"
-                }
-            }
-        ]
-    }
+    "_hash": "6142bfcb78f54dfbf5247ae5e463f25bdb8fff1890806e2e45aa81a59c211653",
+    "patches": []
 }

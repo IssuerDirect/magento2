@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="EavStock100" type="product_extension_attribute">
+        <requiredEntity type="stock_item">Qty_100</requiredEntity>
+    </entity>
+</entities>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/pdf_file.xsd">
+    <totals>
+        <total name="stripe_flat_fees">
+            <title translate="true">Stripe Flat Fees</title>
+            <source_field>stripe_flat_fees</source_field>
+            <model>StripeIntegration\Tax\Model\Order\Pdf\Total\FlatFees</model>
+            <font_size>7</font_size>
+            <display_zero>false</display_zero>
+            <sort_order>450</sort_order>
+        </total>
+    </totals>
+</config>

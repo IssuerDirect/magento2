@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="payment_method_messaging" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Payment Method Messaging Element</label>
+        <comment><![CDATA[Inform the customer about available buy-now-pay-later plans (<a href="https://docs.stripe.com/payments/payment-method-messaging#dynamic-display" target="_blank">conditions apply</a>).]]></comment>
+        <field id="show_on_product_page" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Show on Product Page</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/stripe_payments_payment_method_messaging/show_on_product_page</config_path>
+        </field>
+        <field id="show_in_minicart" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Show in Minicart</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/stripe_payments_payment_method_messaging/show_in_minicart</config_path>
+        </field>
+        <field id="show_in_shopping_cart" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Show in Shopping Cart</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/stripe_payments_payment_method_messaging/show_in_shopping_cart</config_path>
+        </field>
+    </group>
+</include>
