@@ -88,7 +88,7 @@
         "sentry/sentry": "^4.31",
         "spomky-labs/aes-key-wrap": "^7.0",
         "stomp-php/stomp-php": "^5.1",
-        "stripe/stripe-php": "~17.6",
+        "stripe/stripe-php": "^20.1",
         "symfony/cache": "^7.4",
         "symfony/console": "^7.4",
         "symfony/intl": "^7.4",
