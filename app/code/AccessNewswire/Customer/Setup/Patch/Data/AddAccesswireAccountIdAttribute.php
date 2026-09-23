@@ -36,8 +36,9 @@ class AddAccesswireAccountIdAttribute implements DataPatchInterface, PatchRevert
                 'input' => 'text',
                 'required' => false,
                 'visible' => true,
-                // Non-system attributes are exposed via the REST API's
-                // `custom_attributes`, which is how external systems set it.
+                // Defaults to true if omitted. System attributes are left out
+                // of `custom_attributes`, which is the only way the REST API
+                // and CustomerInterface can read or write this one.
                 'system' => false,
                 'user_defined' => true,
                 'position' => 1000,
