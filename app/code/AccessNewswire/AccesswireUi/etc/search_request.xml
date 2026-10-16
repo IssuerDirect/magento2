@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+    Adds a "not in category" clause to the GraphQL product searches, bound to
+    the `accesswire_excluded_category_id` filter (schema.graphqls). Magento's
+    own category_id filter has no exclusion operator, and filtering on the
+    client side instead leaves pages short (or empty) of sellable products.
+    Unbound - i.e. the filter not used - the clause drops out of the query.
+-->
+<requests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:framework:Search/etc/search_request.xsd">
+    <request query="graphql_product_search_with_aggregation" index="catalogsearch_fulltext">
+        <queries>
+            <query xsi:type="boolQuery" name="graphql_product_search_with_aggregation" boost="1">
+                <queryReference clause="not" ref="accesswire_excluded_category"/>
+            </query>
+            <query name="accesswire_excluded_category" xsi:type="filteredQuery">
+                <filterReference clause="must" ref="accesswire_excluded_category_filter"/>
+            </query>
+        </queries>
+        <filters>
+            <filter xsi:type="termFilter" name="accesswire_excluded_category_filter" field="category_ids" value="$accesswire_excluded_category_id$"/>
+        </filters>
+    </request>
+    <request query="graphql_product_search" index="catalogsearch_fulltext">
+        <queries>
+            <query xsi:type="boolQuery" name="graphql_product_search" boost="1">
+                <queryReference clause="not" ref="accesswire_excluded_category"/>
+            </query>
+            <query name="accesswire_excluded_category" xsi:type="filteredQuery">
+                <filterReference clause="must" ref="accesswire_excluded_category_filter"/>
+            </query>
+        </queries>
+        <filters>
+            <filter xsi:type="termFilter" name="accesswire_excluded_category_filter" field="category_ids" value="$accesswire_excluded_category_id$"/>
+        </filters>
+    </request>
+</requests>

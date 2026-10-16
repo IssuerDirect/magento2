@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AccessNewswire\Customer\Test\Unit\Plugin;
 
+use AccessNewswire\Customer\Model\TrustedAccountIdWrite;
 use AccessNewswire\Customer\Plugin\GuardAccesswireAccountId;
 use Magento\Authorization\Model\UserContextInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -26,6 +27,7 @@ class GuardAccesswireAccountIdTest extends TestCase
     private State&Stub $appState;
     private CustomerRepositoryInterface&Stub $repository;
     private CustomerInterface&MockObject $customer;
+    private TrustedAccountIdWrite $trustedWrite;
     private GuardAccesswireAccountId $plugin;
 
     protected function setUp(): void
@@ -34,7 +36,8 @@ class GuardAccesswireAccountIdTest extends TestCase
         $this->appState = $this->createStub(State::class);
         $this->repository = $this->createStub(CustomerRepositoryInterface::class);
         $this->customer = $this->createMock(CustomerInterface::class);
-        $this->plugin = new GuardAccesswireAccountId($this->userContext, $this->appState);
+        $this->trustedWrite = new TrustedAccountIdWrite();
+        $this->plugin = new GuardAccesswireAccountId($this->userContext, $this->appState, $this->trustedWrite);
     }
 
     public static function trustedCallerProvider(): array
@@ -70,6 +73,30 @@ class GuardAccesswireAccountIdTest extends TestCase
             ->willThrowException(new LocalizedException(__('Area code is not set')));
 
         $this->customer->expects($this->never())->method('setCustomAttribute');
+
+        $this->plugin->beforeSave($this->repository, $this->customer);
+    }
+
+    public function testTrustedWriteCanSetValueFromUntrustedArea(): void
+    {
+        $this->givenCaller(Area::AREA_GRAPHQL, UserContextInterface::USER_TYPE_GUEST);
+
+        $this->customer->expects($this->never())->method('setCustomAttribute');
+
+        $this->trustedWrite->execute(
+            fn () => $this->plugin->beforeSave($this->repository, $this->customer)
+        );
+    }
+
+    public function testTrustedWriteEndsAfterCallback(): void
+    {
+        $this->givenCaller(Area::AREA_GRAPHQL, UserContextInterface::USER_TYPE_GUEST);
+        $this->customer->method('getId')->willReturn(null);
+        $this->trustedWrite->execute(fn () => null);
+
+        $this->customer->expects($this->once())
+            ->method('setCustomAttribute')
+            ->with(self::ATTRIBUTE_CODE, null);
 
         $this->plugin->beforeSave($this->repository, $this->customer);
     }

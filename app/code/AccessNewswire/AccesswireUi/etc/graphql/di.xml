@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- On the response rather than the GraphQl controller, so full page
+         cache hits (which never reach the controller) get the headers too. -->
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="accessnewswire_accesswire_ui_graphql_cors"
+                type="AccessNewswire\AccesswireUi\Plugin\GraphQlCors"/>
+    </type>
+</config>

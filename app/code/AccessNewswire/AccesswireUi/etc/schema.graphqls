@@ -1,0 +1,36 @@
+type Mutation {
+    createCustomerCart: CreateCustomerCartOutput @resolver(class: "AccessNewswire\\AccesswireUi\\Model\\Resolver\\CreateCustomerCart") @doc(description: "Create an additional, separate cart for the logged-in customer - unlike `customerCart`, every call creates a new one. Use its `id` with `cart(cart_id)` and the cart mutations as usual; `checkout/cart/resumeCustomerCart` hands it to the storefront checkout.")
+    generateAccesswireCustomerToken(accesswire_account_id: String! @doc(description: "The AccessWire account ID stored on the customer (the `accesswire_account_id` attribute)."), account_name: String @doc(description: "The AccessWire account's company name, stored on the customer (the `accesswire_account_name` attribute) and kept up to date on every call."), email: String @doc(description: "Used only when creating the customer."), firstname: String @doc(description: "Used only when creating the customer."), lastname: String @doc(description: "Used only when creating the customer."), address: AccesswireCustomerAddressInput @doc(description: "Used only when creating the customer: saved as their default billing and shipping address, if Magento accepts it.")): AccesswireCustomerToken @resolver(class: "AccessNewswire\\AccesswireUi\\Model\\Resolver\\GenerateAccesswireCustomerToken") @doc(description: "Proof of concept, unauthenticated: issue a customer bearer token for the AccessNewswire-website customer linked to an AccessWire account, without a password. If no customer is linked yet, one is created (General group) from `email`, `firstname` and `lastname`.")
+}
+
+type CreateCustomerCartOutput @doc(description: "Contains the new customer cart.") {
+    cart: Cart! @doc(description: "The newly created cart.")
+}
+
+type AccesswireCustomerToken @doc(description: "A customer bearer token and when it expires.") {
+    token: String! @doc(description: "The customer token, for the `Authorization: Bearer` header.")
+    expires_at: String! @doc(description: "When the token expires, as an ISO 8601 timestamp.")
+}
+
+type Customer {
+    accesswire_account_id: String @resolver(class: "AccessNewswire\\AccesswireUi\\Model\\Resolver\\CustomerAccesswireAttribute") @doc(description: "The AccessWire account this customer is linked to.")
+    accesswire_account_name: String @resolver(class: "AccessNewswire\\AccesswireUi\\Model\\Resolver\\CustomerAccesswireAttribute") @doc(description: "The linked AccessWire account's company name.")
+}
+
+input AccesswireCustomerAddressInput @doc(description: "An AccessWire account address, for a new customer's default address.") {
+    company: String
+    street: [String]
+    city: String
+    region_code: String @doc(description: "E.g. `GA`; matched against the country's Magento regions.")
+    postcode: String
+    country_code: String @doc(description: "Two-letter country code, e.g. `US`.")
+    telephone: String
+}
+
+input ProductAttributeFilterInput {
+    accesswire_excluded_category_id: FilterEqualTypeInput @doc(description: "Leave out products in any of these category IDs (`eq` or `in`). Applied in the search itself, so `pageSize` and `total_count` count only the products that are left.")
+}
+
+interface ProductInterface {
+    accesswire_special_offer_image: String @resolver(class: "AccessNewswire\\AccesswireUi\\Model\\Resolver\\ProductMediaImageUrl") @doc(description: "Full URL of the product's \"Special Offer Image\" (an image role under Images & Videos), or null if none is assigned.")
+}

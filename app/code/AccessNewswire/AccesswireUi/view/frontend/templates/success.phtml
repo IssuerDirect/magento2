@@ -1,0 +1,35 @@
+<?php
+/**
+ * Magento_Checkout::success.phtml, with the "Continue Shopping" button
+ * pointing back into accesswire-ui when the customer came from there.
+ *
+ * @var \Magento\Checkout\Block\Onepage\Success $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+/** @var \AccessNewswire\AccesswireUi\ViewModel\ReturnLink $returnLink */
+$returnLink = $block->getData('return_link');
+$returnUrl = $returnLink->getUrl();
+?>
+<div class="checkout-success">
+    <?php if ($block->getOrderId()): ?>
+        <?php if ($block->getCanViewOrder()): ?>
+            <p><?= $escaper->escapeHtml(__('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong>%s</strong></a>', $escaper->escapeUrl($block->getViewOrderUrl()), $block->getOrderId())), ['a', 'strong']) ?></p>
+        <?php else: ?>
+            <p><?= $escaper->escapeHtml(__('Your order # is: <span>%1</span>.', $block->getOrderId()), ['span']) ?></p>
+        <?php endif; ?>
+        <p><?= $escaper->escapeHtml(__('We\'ll email you an order confirmation with details and tracking info.')) ?></p>
+    <?php endif; ?>
+
+    <?= $block->getAdditionalInfoHtml() ?>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <?php if ($returnUrl !== null): ?>
+                <a class="action primary continue" href="<?= $escaper->escapeUrl($returnUrl) ?>"><span><?= $escaper->escapeHtml($returnLink->getText()) ?></span></a>
+            <?php else: ?>
+                <a class="action primary continue" href="<?= $escaper->escapeUrl($block->getContinueUrl()) ?>"><span><?= $escaper->escapeHtml(__('Continue Shopping')) ?></span></a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

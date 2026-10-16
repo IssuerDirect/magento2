@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <!-- Serves checkout/cart/resumeGuestCart under Magento_Checkout's URL. -->
+    <router id="standard">
+        <route id="checkout">
+            <module name="AccessNewswire_AccesswireUi" before="Magento_Checkout"/>
+        </route>
+    </router>
+</config>

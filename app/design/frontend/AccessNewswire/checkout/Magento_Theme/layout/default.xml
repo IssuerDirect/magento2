@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- The header and footer come from the shared AccessNewswire menu/footer
+             scripts (github.com/ACCESSNeswire/anw_shared_menu_footer), which
+             render in place of the script tag. Their hosts are allowed by
+             AccessNewswire_Storefront's csp_whitelist.xml. -->
+        <referenceContainer name="after.body.start">
+            <block class="Magento\Framework\View\Element\Text" name="anw.shared.menu" before="-">
+                <arguments>
+                    <argument name="text" xsi:type="string"><![CDATA[<script src="https://accessneswire.github.io/anw_shared_menu_footer/menu.js"></script>]]></argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="page.bottom.container">
+            <block class="Magento\Framework\View\Element\Text" name="anw.shared.footer" after="-">
+                <arguments>
+                    <argument name="text" xsi:type="string"><![CDATA[<script src="https://accessneswire.github.io/anw_shared_menu_footer/footer.js"></script>]]></argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+
+        <!-- Staff-editable slot (Content > Blocks > "checkout_notice"). Renders
+             nothing while the block is empty or disabled. -->
+        <referenceContainer name="columns.top">
+            <block class="Magento\Cms\Block\Block" name="anw.checkout.notice" before="-">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">checkout_notice</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+
+        <!-- Replaced by the shared menu/footer. checkout.header.container is the
+             checkout page layout's own header. -->
+        <referenceContainer name="header.container" remove="true"/>
+        <referenceContainer name="checkout.header.container" remove="true"/>
+        <referenceBlock name="navigation.sections" remove="true"/>
+        <referenceContainer name="footer-container" remove="true"/>
+        <referenceBlock name="copyright" remove="true"/>
+    </body>
+</page>

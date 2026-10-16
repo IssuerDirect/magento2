@@ -4,6 +4,7 @@
     <module name="AccessNewswire_Customer">
         <sequence>
             <module name="Magento_Customer"/>
+            <module name="Magento_Integration"/>
         </sequence>
     </module>
 </config>

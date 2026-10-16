@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Every origin accesswire-ui is served from, across all environments.
+         The one list both GraphQL CORS and the post-checkout return_url are
+         checked against. -->
+    <type name="AccessNewswire\AccesswireUi\Model\AllowedOrigins">
+        <arguments>
+            <argument name="origins" xsi:type="array">
+                <item name="prod" xsi:type="string">https://app.accessnewswire.com</item>
+                <item name="alpha" xsi:type="string">https://app-alpha.external.accessnewswire.cloud</item>
+                <item name="magento_exploration" xsi:type="string">https://client.magento-exploration.newswire1.com</item>
+                <item name="local_proxied" xsi:type="string">https://client.staite-magento-local.newswire1.com</item>
+                <item name="local" xsi:type="string">http://localhost:4204</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
