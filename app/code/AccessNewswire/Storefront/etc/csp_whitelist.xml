@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- Checkout enforces CSP, so everything the shared menu/footer scripts
+     (loaded by the AccessNewswire/checkout theme) pull in must be listed. -->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="anw-shared-menu-footer" type="host">https://accessneswire.github.io</value>
+            </values>
+        </policy>
+        <!-- Font Awesome, which menu.js injects. -->
+        <policy id="style-src">
+            <values>
+                <value id="anw-font-awesome" type="host">https://cdnjs.cloudflare.com</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="anw-font-awesome" type="host">https://cdnjs.cloudflare.com</value>
+            </values>
+        </policy>
+        <!-- Logos in the menu and footer. -->
+        <policy id="img-src">
+            <values>
+                <value id="anw-shared-menu-footer-images" type="host">https://irp.cdn-website.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

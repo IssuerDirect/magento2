@@ -1,0 +1,44 @@
+// The shared menu/footer scripts style themselves in Montserrat but don't
+// load it, so the page has to.
+.anw-montserrat(@weight) {
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('../fonts/montserrat/montserrat-@{weight}.woff2') format('woff2');
+        font-weight: @weight;
+        font-style: normal;
+        font-display: swap;
+    }
+}
+
+.anw-montserrat(400);
+.anw-montserrat(500);
+.anw-montserrat(600);
+.anw-montserrat(700);
+
+// Matches the production (TorqueDigital/issuerdirect) theme: an animated
+// gradient behind the page, with the content on a white panel.
+body {
+    animation: anw-gradient 15s ease infinite;
+    background: linear-gradient(-45deg, #b303ce, #a30dcf, #7a2d93, #fb3c64, #ff6f61, #fff);
+    background-size: 800% 800%;
+    min-height: 100vh;
+}
+
+@keyframes anw-gradient {
+    0%, 100% { background-position: 0 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+// Production puts its max-width on an inner .page-main-wrapper so the white
+// spans the viewport. Luma's max-width is on .page-main itself, and its
+// `.page-main > ...` rules rule out adding a wrapper, so the white is painted
+// out to the sides instead: an outset border-image is drawn beyond the box
+// without affecting layout, scrolling, or anything above or below it.
+.page-main {
+    background: #fff;
+    padding-top: 40px;
+    border-image-source: linear-gradient(#fff, #fff);
+    border-image-slice: 0 fill;
+    border-image-width: 0;
+    border-image-outset: 0 100vmax;
+}

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AccessNewswire\Customer\Plugin;
 
+use AccessNewswire\Customer\Model\TrustedAccountIdWrite;
 use AccessNewswire\Customer\Setup\Patch\Data\AddAccesswireAccountIdAttribute;
 use Magento\Authorization\Model\UserContextInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -29,7 +30,8 @@ class GuardAccesswireAccountId
 
     public function __construct(
         private readonly UserContextInterface $userContext,
-        private readonly State $appState
+        private readonly State $appState,
+        private readonly TrustedAccountIdWrite $trustedWrite
     ) {
     }
 
@@ -50,6 +52,10 @@ class GuardAccesswireAccountId
 
     private function isTrustedCaller(): bool
     {
+        if ($this->trustedWrite->isActive()) {
+            return true;
+        }
+
         try {
             $areaCode = $this->appState->getAreaCode();
         } catch (LocalizedException) {

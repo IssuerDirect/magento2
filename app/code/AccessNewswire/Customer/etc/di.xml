@@ -5,4 +5,11 @@
         <plugin name="accessnewswire_guard_accesswire_account_id"
                 type="AccessNewswire\Customer\Plugin\GuardAccesswireAccountId"/>
     </type>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="accessnewswire_customer_token" xsi:type="object">AccessNewswire\Customer\Console\Command\CreateCustomerTokenCommand</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
